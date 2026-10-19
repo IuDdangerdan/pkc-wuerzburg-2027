@@ -1,0 +1,576 @@
+{
+  "settings": {
+    "siteTitle": "PKC · Würzburg 2027",
+    "festivalName": "Würzburg 2027",
+    "festivalEyebrow": "WÜRZBURG 2027",
+    "sidebarDate": "04.–06. Juni · Posthalle",
+    "sidebarFooter": "Potsdamer Kneipenchor",
+    "sidebarMotto": "Ein Wochenende. Viele gute Stimmen.",
+    "brandSubtitle": "Zusammen unterwegs.",
+    "heroTitle": "Ein Wochenende voller\nMusik & Kneipenchorliebe.",
+    "heroText": "Trag deine Unterkunft, Zimmergemeinschaft und Reisepläne ein – auch wenn noch nicht alles feststeht.",
+    "heroButtonLabel": "Meine Planung eintragen",
+    "heroButtonUrl": "#plan",
+    "heroDate": "04–06",
+    "heroMonth": "JUNI 2027",
+    "eventStart": "2027-06-04",
+    "eventEnd": "2027-06-06",
+    "eventUrl": "https://pkcapp.potsdamerkneipenchor.de/events?_id=452",
+    "eventButtonLabel": "Zur Teilnahmeabstimmung",
+    "busDeadline": "2026-10-25",
+    "busDeadlineText": "Bitte gib bis dahin an, ob du mit einem gemeinsamen Bus fahren möchtest.",
+    "offersIntro": "Quelle: Veranstalterunterlagen · Stand: 13.10.2026.",
+    "contactName": "Daniel",
+    "whatsappNumber": "4915754698693",
+    "questionIntro": "Schick deine Frage an die Website-Orga oder schreib {contact} direkt per WhatsApp.",
+    "questionPrivacy": "Fragen über dieses Formular sehen du und alle mit Orga-Rolle auf dieser Website. Antworten erhältst du persönlich; deine Frage wird nicht automatisch im Wiki veröffentlicht.",
+    "taskTitle": "Orga-Aufgabe · bis Ende Oktober 2026",
+    "taskText": "Mit der Chorleitung klären, ob beim Sightsinging Strom benötigt wird. Bei Bedarf an die Würzburger melden.",
+    "planIntro": "Alle buchen selbst. Hier hältst du deine Planung fest und kannst Anschluss finden.",
+    "roomsIntro": "Automatisch aus euren Angaben zusammengestellt. Jede Person bucht selbst.",
+    "travelTitle": "Wie kommen wir hin?",
+    "travelIntro": "Erst Interesse sammeln, dann gemeinsam entscheiden.",
+    "travelBusTitle": "Ein Bus für den Chor?",
+    "travelBusTag": "NOCH KEIN ANGEBOT",
+    "travelBusText": "Dein Interesse ist unverbindlich. Preis, Zeiten und Buchung sind noch offen. Deine Antwort sieht nur die Orga.",
+    "travelOtherTitle": "Bahn & Fahrgemeinschaften",
+    "travelOtherText": "Trage deine bevorzugte Reiseart ein. Konkrete Verbindungen stimmen wir später ab.",
+    "quick1Title": "Kosten & Fristen",
+    "quick1Text": "Beiträge und Buchungsfristen.",
+    "quick1Tag": "GUT ZU WISSEN",
+    "quick1Url": "#wiki/kosten",
+    "quick2Title": "Wer wohnt wo?",
+    "quick2Text": "Unterkünfte und freie Zimmerplätze finden.",
+    "quick2Tag": "UNTERKUNFT",
+    "quick2Url": "#rooms"
+  },
+  "hotels": [
+    {
+      "name": "Babelfish Hostel",
+      "deadline": "2026-10-31",
+      "price": "Ab 26,40 € pro Bett/Nacht; eigene Zimmer ab 60,50 € pro Zimmer/Nacht",
+      "breakfast": "Nicht angegeben",
+      "booking": "kontingent@babelfish-hostel.de · Stichwort „Kneipenchorfestival“",
+      "url": "mailto:kontingent@babelfish-hostel.de",
+      "detail": "Gemeinschaftsbad: 2 × 10-Bett zu 26,40 € und 2 × 6-Bett zu 30,30 € je Bett/Nacht. Eigenes Bad auf dem Flur: 2 × 4-Bett zu 36,30 € je Bett/Nacht. Zimmer mit eigenem Bad, jeweils pro Zimmer/Nacht: 2 × EZ 60,50 €; 3 × DZ 73,70 €; 3 × 4-Bett 130,90 €; 1 × 6-Bett 163,90 €; 1 × 4-Bett-Apartment 163,90 €. Bei Buchung vollen Namen, Anschrift, Zimmerwunsch und An-/Abreise nennen. Nach dem 31.10.2026 gehen nicht gebuchte Betten zurück in den Verkauf.",
+      "sections": [
+        {
+          "title": "Betten mit Gemeinschaftsbad · pro Bett/Nacht",
+          "items": [
+            "2 × 10-Bett-Zimmer: 26,40 €",
+            "2 × 6-Bett-Zimmer: 30,30 €"
+          ]
+        },
+        {
+          "title": "Betten mit eigenem Bad auf dem Flur · pro Bett/Nacht",
+          "items": [
+            "2 × 4-Bett-Zimmer: 36,30 €"
+          ]
+        },
+        {
+          "title": "Zimmer mit eigenem Bad · pro Zimmer/Nacht",
+          "items": [
+            "2 × Einzelzimmer: 60,50 €",
+            "3 × Doppelzimmer: 73,70 €",
+            "3 × 4-Bett-Zimmer: 130,90 €",
+            "1 × 6-Bett-Zimmer: 163,90 €",
+            "1 × 4-Bett-Apartment: 163,90 €"
+          ]
+        },
+        {
+          "title": "Für die Buchung angeben",
+          "items": [
+            "Voller Name und Anschrift",
+            "Gewünschte Zimmerart",
+            "Anreise- und Abreisedatum"
+          ]
+        },
+        {
+          "title": "Kontingent",
+          "items": [
+            "Nach dem 31.10.2026 gehen nicht gebuchte Betten zurück in den Verkauf."
+          ]
+        }
+      ],
+      "id": "hotel-0",
+      "position": 0,
+      "documentId": "kontingente",
+      "note": "",
+      "warning": "",
+      "links": [
+        {
+          "label": "E-Mail ans Hotel",
+          "url": "mailto:kontingent@babelfish-hostel.de"
+        }
+      ],
+      "sourceNote": ""
+    },
+    {
+      "name": "Hotel Emilia",
+      "deadline": "2026-11-30",
+      "price": "80 € pro Person für 2 Übernachtungen",
+      "breakfast": "Nicht enthalten",
+      "booking": "info@emely-hotel.de · Stichwort „Kneipenchorfestival“",
+      "url": "mailto:info@emely-hotel.de",
+      "website": "https://hotel-emilia.de/",
+      "detail": "Unterbringung nach Verfügbarkeit in Einzel-, Doppel- oder Familienzimmern. Die Pauschale gilt nur bei voller Belegung des Zimmers. Bei geringerer Belegung den abweichenden Preis direkt mit der Unterkunft klären. Die abweichende Schreibweise der Buchungs-E-Mail ist so in der Veranstalterliste angegeben.",
+      "sections": [
+        {
+          "title": "Unterbringung",
+          "items": [
+            "Einzel-, Doppel- oder Familienzimmer nach Verfügbarkeit"
+          ]
+        },
+        {
+          "title": "Voraussetzung für die Pauschale",
+          "items": [
+            "80 € pro Person für zwei Übernachtungen gelten nur bei voller Zimmerbelegung.",
+            "Bei weniger Bewohnern den abweichenden Preis direkt mit der Unterkunft klären."
+          ]
+        },
+        {
+          "title": "Kontakt",
+          "items": [
+            "Die abweichende Schreibweise info@emely-hotel.de ist so in der Veranstalterliste angegeben."
+          ]
+        }
+      ],
+      "id": "hotel-1",
+      "position": 1,
+      "documentId": "kontingente",
+      "note": "",
+      "warning": "",
+      "links": [
+        {
+          "label": "E-Mail ans Hotel",
+          "url": "mailto:info@emely-hotel.de"
+        },
+        {
+          "label": "Hotelwebsite öffnen",
+          "url": "https://hotel-emilia.de/"
+        }
+      ],
+      "sourceNote": ""
+    },
+    {
+      "name": "City Hotel Würzburg",
+      "deadline": "2026-12-15",
+      "price": "EZ ab 76,50 €; DZ/Twin ab 119,50 € pro Zimmer/Nacht",
+      "breakfast": "16,90 € zusätzlich",
+      "booking": "Reservierung über Formular der Würzburger",
+      "url": "https://forms.gle/STkGHcPTnP4JTdYF8",
+      "detail": "4 × EZ Economy 76,50 €; 13 × EZ Classic 87 €; 3 × EZ Comfort 81,50 €; 4 × DZ Comfort 119,50 €; 8 × DZ Classic 130,50 €; 2 × Twin Classic 119,50 €, jeweils pro Zimmer/Nacht. Diese Zimmer werden über den WKC reserviert. Nach dem 15.12. werden Namen und E-Mail-Adressen an das Hotel gegeben. Jede Person zahlt und haftet für das jeweilige Zimmer selbst. Frühstück kann bei Ankunft dazugebucht werden. Das ist der Buchungsweg des Veranstalters, keine Sammelbuchung durch den PKC.",
+      "sections": [
+        {
+          "title": "Einzelzimmer · pro Zimmer/Nacht",
+          "items": [
+            "4 × Economy: 76,50 €",
+            "13 × Classic: 87 €",
+            "3 × Comfort: 81,50 €"
+          ]
+        },
+        {
+          "title": "Doppel- und Twin-Zimmer · pro Zimmer/Nacht",
+          "items": [
+            "4 × Doppelzimmer Comfort: 119,50 €",
+            "8 × Doppelzimmer Classic: 130,50 €",
+            "2 × Twin Classic: 119,50 €"
+          ]
+        },
+        {
+          "title": "So läuft die Reservierung",
+          "items": [
+            "Bis 15.12.2026 das verlinkte Formular der Würzburger ausfüllen.",
+            "Der WKC gibt danach Namen und E-Mail-Adressen an das Hotel weiter.",
+            "Jede Person zahlt und haftet selbst für ihr Zimmer; keine Sammelbuchung durch den PKC."
+          ]
+        },
+        {
+          "title": "Frühstück",
+          "items": [
+            "16,90 € zusätzlich; kann bei Ankunft dazugebucht werden."
+          ]
+        }
+      ],
+      "id": "hotel-2",
+      "position": 2,
+      "documentId": "kontingente",
+      "note": "",
+      "warning": "",
+      "links": [
+        {
+          "label": "Reservierungsformular öffnen",
+          "url": "https://forms.gle/STkGHcPTnP4JTdYF8"
+        }
+      ],
+      "sourceNote": ""
+    },
+    {
+      "name": "Hotel Franziskaner",
+      "deadline": "2027-01-15",
+      "price": "EZ 139 €; DZ Standard 169 €; DZ Superior 199 € pro Zimmer/Nacht",
+      "breakfast": "15 € zusätzlich",
+      "booking": "Direkt beim Hotel · Stichwort „Kneipenchor Festival“",
+      "detail": "5 × EZ; 4 × DZ Standard; 3 × DZ Superior. Ein konkreter Buchungslink ist in der Anlage nicht angegeben.",
+      "sections": [
+        {
+          "title": "Kontingent · pro Zimmer/Nacht",
+          "items": [
+            "5 × Einzelzimmer: 139 €",
+            "4 × Doppelzimmer Standard: 169 €",
+            "3 × Doppelzimmer Superior: 199 €"
+          ]
+        },
+        {
+          "title": "Buchungsweg",
+          "items": [
+            "Direkt beim Hotel mit dem oben genannten Stichwort buchen.",
+            "Ein konkreter Buchungslink ist in der Anlage nicht angegeben."
+          ]
+        }
+      ],
+      "id": "hotel-3",
+      "position": 3,
+      "documentId": "kontingente",
+      "note": "",
+      "warning": "",
+      "links": [],
+      "sourceNote": ""
+    },
+    {
+      "name": "Walfisch",
+      "deadline": "2027-02-01",
+      "price": "EZ 110 €; DZ 150 € pro Zimmer/Nacht",
+      "breakfast": "Nicht enthalten",
+      "booking": "Direkt beim Hotel · Stichwort „Kneipenchorfestival“",
+      "detail": "10 × EZ und 10 × DZ. Ein konkreter Buchungslink ist in der Anlage nicht angegeben.",
+      "sections": [
+        {
+          "title": "Kontingent · pro Zimmer/Nacht",
+          "items": [
+            "10 × Einzelzimmer: 110 €",
+            "10 × Doppelzimmer: 150 €"
+          ]
+        },
+        {
+          "title": "Buchungsweg",
+          "items": [
+            "Direkt beim Hotel mit dem oben genannten Stichwort buchen.",
+            "Ein konkreter Buchungslink ist in der Anlage nicht angegeben."
+          ]
+        }
+      ],
+      "id": "hotel-4",
+      "position": 4,
+      "documentId": "kontingente",
+      "note": "",
+      "warning": "",
+      "links": [],
+      "sourceNote": ""
+    },
+    {
+      "name": "City Partner Hotel Strauss",
+      "deadline": "2027-03-01",
+      "price": "EZ 120 €; DZ 170 €; 3er 205 €; Suite für 4 Personen 325 € pro Zimmer/Nacht",
+      "breakfast": "Inklusive",
+      "booking": "Direkt beim Hotel · Stichwort „Kneipenchorfestival“",
+      "detail": "15 × EZ; 20 × DZ; 5 × 3er-Zimmer; 2 × Suite für je 4 Personen. Ein konkreter Buchungslink ist in der Anlage nicht angegeben.",
+      "sections": [
+        {
+          "title": "Kontingent · pro Zimmer/Nacht",
+          "items": [
+            "15 × Einzelzimmer: 120 €",
+            "20 × Doppelzimmer: 170 €",
+            "5 × 3er-Zimmer: 205 €",
+            "2 × Suite für je 4 Personen: 325 €"
+          ]
+        },
+        {
+          "title": "Buchungsweg",
+          "items": [
+            "Direkt beim Hotel mit dem oben genannten Stichwort buchen.",
+            "Ein konkreter Buchungslink ist in der Anlage nicht angegeben."
+          ]
+        }
+      ],
+      "id": "hotel-5",
+      "position": 5,
+      "documentId": "kontingente",
+      "note": "",
+      "warning": "",
+      "links": [],
+      "sourceNote": ""
+    },
+    {
+      "name": "IBIS Würzburg City",
+      "deadline": "2027-04-12",
+      "price": "EZ 134 €; DZ 163 € pro Zimmer/Nacht",
+      "breakfast": "Inklusive",
+      "booking": "Buchungsformular · Kontingent 75809 / „Kneipenchorfestival“",
+      "url": "/documents/formular-ibis.pdf",
+      "detail": "Laut Veranstaltermail 40 EZ/DZ. Zahlung bei Anreise. Zimmer ab 15 Uhr, Abreise bis 12 Uhr; Bereithaltung bis 19 Uhr am Anreisetag. Kreditkartendaten werden zur Zimmergarantie verlangt, niemals in dieser App. Bei Nichtanreise kann das Hotel 100 % des vereinbarten Zimmerpreises berechnen. Eine kostenfreie Stornierungsfrist ist im Formular nicht genannt.",
+      "sections": [
+        {
+          "title": "Kontingent & Zahlung",
+          "items": [
+            "Laut Veranstaltermail 40 Einzel-/Doppelzimmer",
+            "Zahlung bei Anreise direkt im Hotel"
+          ]
+        },
+        {
+          "title": "Ankunft & Abreise",
+          "items": [
+            "Check-in: Zimmer ab 15 Uhr verfügbar",
+            "Check-out: Zimmer bis 12 Uhr verfügbar",
+            "Bereithaltung der Buchung bis 19 Uhr am Anreisetag"
+          ]
+        },
+        {
+          "title": "Garantie & Stornierung",
+          "items": [
+            "Kreditkartendaten zur Zimmergarantie erforderlich; nicht in dieser App eintragen.",
+            "Bei Nichtanreise kann das Hotel 100 % des vereinbarten Zimmerpreises berechnen.",
+            "Eine kostenfreie Stornierungsfrist ist im Formular nicht genannt."
+          ]
+        }
+      ],
+      "id": "hotel-6",
+      "position": 6,
+      "documentId": "ibis",
+      "note": "Lade das Formular herunter. Darin steht nicht, wohin oder wie du es zurückschicken sollst. Frage deshalb zuerst beim Hotel unter [info@ibiswuerzburg.com](mailto:info@ibiswuerzburg.com) nach dem vorgesehenen Buchungsweg und danach, wie du die verlangten Kreditkartendaten sicher übermitteln kannst.",
+      "warning": "Schicke das ausgefüllte Formular nicht einfach per E-Mail.",
+      "links": [
+        {
+          "label": "IBIS-Formular herunterladen",
+          "url": "/documents/formular-ibis.pdf"
+        }
+      ],
+      "sourceNote": ""
+    },
+    {
+      "name": "Dortmunder Hof",
+      "deadline": "2027-04-23",
+      "price": "EZ 215 €; DZ 260 €; Twin 220 €; 3er 320 € jeweils für 2 Nächte/Zimmer",
+      "breakfast": "Nicht angegeben",
+      "booking": "Direkt beim Hotel · Stichwort „Würzburger Kneipenchor“",
+      "detail": "1 × EZ; 6 × DZ; 1 × Twin; 4 × 3er-Zimmer. Achtung: Diese Preise gelten für zwei Nächte, nicht pro Nacht. Ein konkreter Buchungslink ist in der Anlage nicht angegeben.",
+      "sections": [
+        {
+          "title": "Kontingent · pro Zimmer für zwei Nächte",
+          "items": [
+            "1 × Einzelzimmer: 215 €",
+            "6 × Doppelzimmer: 260 €",
+            "1 × Twin: 220 €",
+            "4 × 3er-Zimmer: 320 €"
+          ]
+        },
+        {
+          "title": "Wichtig zur Preisgrundlage",
+          "items": [
+            "Die Beträge gelten jeweils für zwei Nächte, nicht pro Nacht."
+          ]
+        },
+        {
+          "title": "Buchungsweg",
+          "items": [
+            "Direkt beim Hotel mit dem oben genannten Stichwort buchen.",
+            "Ein konkreter Buchungslink ist in der Anlage nicht angegeben."
+          ]
+        }
+      ],
+      "id": "hotel-7",
+      "position": 7,
+      "documentId": "kontingente",
+      "note": "",
+      "warning": "",
+      "links": [],
+      "sourceNote": ""
+    },
+    {
+      "name": "Moxy",
+      "deadline": "2027-04-23",
+      "price": "EZ 149 €; DZ 164 € pro Zimmer/Nacht",
+      "breakfast": "Inklusive",
+      "booking": "Gemeinsamer Marriott-Buchungslink",
+      "url": "https://www.marriott.com/de/event-reservations/reservation-link.mi?id=1790854157309&key=GRP&app=resvlink&_p=c11c32dc9a016ceee01c87e3edb4",
+      "detail": "Laut Veranstaltermail 40 EZ/DZ. Weitere Konditionen und Verfügbarkeit beim Buchungsanbieter prüfen.",
+      "sections": [
+        {
+          "title": "Kontingent",
+          "items": [
+            "Laut Veranstaltermail 40 Einzel-/Doppelzimmer"
+          ]
+        },
+        {
+          "title": "Vor der Buchung prüfen",
+          "items": [
+            "Aktuelle Verfügbarkeit",
+            "Stornierungs- und Zahlungsbedingungen beim Buchungsanbieter"
+          ]
+        }
+      ],
+      "id": "hotel-8",
+      "position": 8,
+      "documentId": "",
+      "note": "",
+      "warning": "",
+      "links": [
+        {
+          "label": "Buchungsseite öffnen",
+          "url": "https://www.marriott.com/de/event-reservations/reservation-link.mi?id=1790854157309&key=GRP&app=resvlink&_p=c11c32dc9a016ceee01c87e3edb4"
+        }
+      ],
+      "sourceNote": "Quelle: Veranstaltermail mit den zusätzlichen Hotelangeboten."
+    },
+    {
+      "name": "AC Hotel",
+      "deadline": "2027-04-23",
+      "price": "EZ 169 €; DZ 187 € pro Zimmer/Nacht",
+      "breakfast": "Inklusive",
+      "booking": "Gemeinsamer Marriott-Buchungslink",
+      "url": "https://www.marriott.com/de/event-reservations/reservation-link.mi?id=1790854157309&key=GRP&app=resvlink&_p=c11c32dc9a016ceee01c87e3edb4",
+      "detail": "Laut Veranstaltermail 40 EZ/DZ. Weitere Konditionen und Verfügbarkeit beim Buchungsanbieter prüfen.",
+      "sections": [
+        {
+          "title": "Kontingent",
+          "items": [
+            "Laut Veranstaltermail 40 Einzel-/Doppelzimmer"
+          ]
+        },
+        {
+          "title": "Vor der Buchung prüfen",
+          "items": [
+            "Aktuelle Verfügbarkeit",
+            "Stornierungs- und Zahlungsbedingungen beim Buchungsanbieter"
+          ]
+        }
+      ],
+      "id": "hotel-9",
+      "position": 9,
+      "documentId": "",
+      "note": "",
+      "warning": "",
+      "links": [
+        {
+          "label": "Buchungsseite öffnen",
+          "url": "https://www.marriott.com/de/event-reservations/reservation-link.mi?id=1790854157309&key=GRP&app=resvlink&_p=c11c32dc9a016ceee01c87e3edb4"
+        }
+      ],
+      "sourceNote": "Quelle: Veranstaltermail mit den zusätzlichen Hotelangeboten."
+    },
+    {
+      "name": "Wittelsbacher Höh",
+      "deadline": "2027-05-02",
+      "price": "EZ 125 €; DZ 175 € pro Zimmer/Nacht",
+      "breakfast": "Inklusive",
+      "booking": "Direkt beim Hotel · Stichwort „Kneipenchorfestival“",
+      "detail": "25 Zimmer. Ein konkreter Buchungslink ist in der Anlage nicht angegeben.",
+      "sections": [
+        {
+          "title": "Kontingent",
+          "items": [
+            "25 Zimmer"
+          ]
+        },
+        {
+          "title": "Buchungsweg",
+          "items": [
+            "Direkt beim Hotel mit dem oben genannten Stichwort buchen.",
+            "Ein konkreter Buchungslink ist in der Anlage nicht angegeben."
+          ]
+        }
+      ],
+      "id": "hotel-10",
+      "position": 10,
+      "documentId": "kontingente",
+      "note": "",
+      "warning": "",
+      "links": [],
+      "sourceNote": ""
+    },
+    {
+      "name": "HomieStay / homie hotels",
+      "deadline": null,
+      "price": "20 % Rabatt mit KNEIPENCHOR2027",
+      "breakfast": "Je nach Unterkunft prüfen",
+      "booking": "Rabattcode bei Buchung angeben",
+      "url": "https://www.homiestay.de/uebersicht",
+      "website": "https://www.homiehotel.de",
+      "detail": "Im Flyer ist der Zeitraum 03.–07.06.2027 angegeben; eine separate Abruffrist wird nicht genannt. Kostenfreie Stornierung bis drei Tage vor Anreise. Rabatt gilt laut Flyer für alle homie stays und homie hotels. Lage vor Buchung prüfen: Angebote liegen auch außerhalb Würzburgs. Kontakt: info@homekeepers.de, 0931 615400.",
+      "sections": [
+        {
+          "title": "Rabatt & Zeitraum",
+          "items": [
+            "20 % Rabatt mit dem Code KNEIPENCHOR2027",
+            "Im Flyer angegebener Zeitraum: 03.–07.06.2027",
+            "Keine separate Abruffrist genannt"
+          ]
+        },
+        {
+          "title": "Stornierung",
+          "items": [
+            "Kostenfrei bis drei Tage vor Anreise"
+          ]
+        },
+        {
+          "title": "Unterkunft auswählen",
+          "items": [
+            "Rabatt gilt laut Flyer für alle homie stays und homie hotels.",
+            "Lage prüfen: Einige Angebote liegen außerhalb Würzburgs."
+          ]
+        },
+        {
+          "title": "Kontakt",
+          "items": [
+            "info@homekeepers.de",
+            "Telefon: 0931 615400"
+          ]
+        }
+      ],
+      "id": "hotel-11",
+      "position": 11,
+      "documentId": "homiestay",
+      "note": "",
+      "warning": "",
+      "links": [
+        {
+          "label": "Ferienwohnungen ansehen",
+          "url": "https://www.homiestay.de/uebersicht"
+        },
+        {
+          "label": "Hotels ansehen",
+          "url": "https://www.homiehotel.de"
+        }
+      ],
+      "sourceNote": ""
+    }
+  ],
+  "documents": [
+    {
+      "id": "kontingente",
+      "label": "Alle Abrufkontingente (PDF)",
+      "name": "abrufkontingente-wuerzburg.pdf",
+      "legacyPath": "/documents/abrufkontingente-wuerzburg.pdf"
+    },
+    {
+      "id": "homiestay",
+      "label": "HomieStay-Rabatt (PDF)",
+      "name": "homiestay.pdf",
+      "legacyPath": "/documents/homiestay.pdf"
+    },
+    {
+      "id": "ibis",
+      "label": "IBIS-Buchungsformular (PDF)",
+      "name": "formular-ibis.pdf",
+      "legacyPath": "/documents/formular-ibis.pdf"
+    }
+  ],
+  "summaries": {
+    "programm": "Ablauf und Termine des Wochenendes.",
+    "unterkunft": "Hotels, Preise und Buchungslinks.",
+    "anreise": "Bus, Bahn und Fahrgemeinschaften.",
+    "kosten": "Teilnahmebeitrag und wichtige Fristen.",
+    "technik": "Setlist, Soundcheck und Technik.",
+    "faq": "Antworten auf häufige Fragen."
+  }
+}

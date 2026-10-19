@@ -1,0 +1,1 @@
+ALTER TABLE `plans` ADD `car_driver` text DEFAULT '' NOT NULL;

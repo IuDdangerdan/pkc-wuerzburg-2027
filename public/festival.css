@@ -1,0 +1,980 @@
+/* PKC Festival: Apricot, Papier und Rot. Referenz: potsdamerkneipenchor.de/festival.
+   Bebas Neue für Plakattitel; klare SVG-Symbole, ruhige Flächen und feste Menükanten. */
+@font-face {
+  font-family: "Bebas Neue";
+  src: url("/fonts/bebas-neue.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+:root {
+  --wine: #b3263c;
+  --bg: #fcf8f3;
+  --panel: #fffefa;
+  --ink: #302724;
+  --muted: #756761;
+  --line: #e8ded5;
+  --festival-apricot: #ffc18f;
+  --festival-soft: #fff0e3;
+  --festival-edge: #d59b6e;
+  --festival-shadow: 0 4px 18px #623a2310;
+}
+body {
+  background: var(--bg);
+  line-height: 1.6;
+}
+body.dark {
+  --wine: #c53349;
+  --bg: #211c1a;
+  --panel: #2b2421;
+  --ink: #fff4e9;
+  --muted: #c8b7ac;
+  --line: #53433a;
+  --festival-apricot: #503326;
+  --festival-soft: #382b25;
+  --festival-edge: #77503a;
+  --festival-shadow: 0 4px 18px #0002;
+}
+header {
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  height: 76px;
+}
+.brand,
+body.dark .brand {
+  color: var(--ink);
+  font-size: 32px;
+  letter-spacing: -1.8px;
+}
+.brand span,
+body.dark .brand span {
+  color: var(--wine);
+}
+.brand small {
+  font-size: 12px;
+  font-weight: 550;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+header > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#identity {
+  color: var(--muted);
+}
+#theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--festival-soft);
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+}
+#viewMode {
+  border-radius: 24px;
+  background: var(--panel);
+}
+h1,
+.festival strong {
+  font-family: "Bebas Neue", Manrope, sans-serif;
+  font-weight: 400;
+  font-synthesis: none;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+h1 {
+  font-size: clamp(46px, 4.5vw, 64px);
+  line-height: 1;
+  margin: 12px 0 20px;
+  text-wrap: balance;
+}
+h2,
+h3 {
+  letter-spacing: -0.7px;
+  font-weight: 800;
+}
+h2 {
+  line-height: 1.3;
+}
+.eyebrow,
+body.dark .eyebrow {
+  display: inline-block;
+  color: var(--wine);
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  font-weight: 800;
+  background: transparent;
+  padding: 0;
+}
+.notice {
+  font-size: 10px;
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+}
+.meta {
+  margin-bottom: 22px;
+}
+.lead {
+  font-size: 15px;
+  line-height: 1.7;
+}
+aside {
+  background: var(--panel);
+}
+.festival {
+  background: var(--festival-apricot);
+  color: var(--ink);
+  padding: 20px 18px 18px;
+  margin-bottom: 22px;
+  border: 0;
+  border-bottom: 5px solid var(--festival-edge);
+  border-radius: 16px 16px 5px 5px;
+  font-size: 9px;
+  letter-spacing: 1.3px;
+  position: relative;
+}
+.festival strong {
+  display: block;
+  font-size: 43px;
+  line-height: 0.98;
+  margin-top: 15px;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+}
+.festival strong span {
+  font-size: 26px;
+  color: var(--wine);
+  padding-left: 10px;
+}
+.festival p {
+  font-size: 11px;
+  font-weight: 550;
+  color: var(--ink);
+  margin: 15px 0 0;
+  letter-spacing: 0;
+}
+.aside-bottom {
+  font-size: 11px;
+}
+/* Alle Ebenen teilen dieselben Spalten, Abstände und Schriftgrößen. */
+#nav .main-navigation,
+#nav .utility-navigation {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
+  min-width: 0;
+}
+#nav .utility-navigation {
+  border-top: 1px solid var(--line);
+  padding: 12px 0 0;
+  margin-top: 14px;
+}
+#nav a {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  justify-content: start;
+  gap: 10px;
+  width: 100%;
+  min-height: 50px;
+  margin: 0;
+  padding: 9px 11px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--muted);
+  text-align: left;
+  white-space: normal;
+  box-shadow: none;
+}
+#nav a > .nav-icon {
+  width: 30px;
+  height: 30px;
+  padding: 6px;
+  border-radius: 9px;
+  background: var(--festival-soft);
+  color: var(--wine);
+  stroke-width: 1.8;
+}
+#nav a > span:not(.unread-dot) {
+  min-width: 0;
+  overflow-wrap: normal;
+}
+#nav a:hover,
+body.dark #nav a:hover {
+  background: var(--festival-soft);
+  color: var(--ink);
+}
+#nav a.active,
+body.dark #nav a.active {
+  background: var(--wine);
+  color: #fff;
+  box-shadow: none;
+}
+#nav a.active > .nav-icon {
+  background: #ffffff20;
+  color: #fff;
+}
+#nav .unread-dot {
+  margin: 0;
+  background: var(--wine);
+}
+#nav a.active .unread-dot {
+  background: #fff;
+}
+/* Sichtbarkeit bleibt auch bei geerbten Nav-Styles eindeutig. */
+#nav[hidden] {
+  display: none !important;
+}
+button,
+.button {
+  font-weight: 650;
+  font-size: 13px;
+  border-radius: 11px;
+  min-height: 44px;
+  padding: 11px 16px;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+button:hover,
+.button:hover {
+  border-color: var(--wine);
+  box-shadow: 0 3px 10px #6b1c1c0a;
+}
+button:active,
+.button:active {
+  transform: translateY(1px);
+}
+button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+.primary,
+body.dark .primary,
+#mobileMenuToggle {
+  background: var(--wine);
+  color: #fff;
+  border-color: var(--wine);
+  box-shadow: 0 3px 0 #681b2820;
+}
+.primary:hover,
+#mobileMenuToggle:hover,
+#mobileMenuToggle[aria-expanded="true"] {
+  background: #951e32;
+  border-color: #951e32;
+  color: #fff;
+}
+#mobileMenuToggle {
+  font-size: 14px;
+  font-weight: 750;
+  min-width: 108px;
+  gap: 8px;
+}
+#mobileUnread {
+  background: var(--festival-apricot);
+  box-shadow: 0 0 0 2px #ffffff30;
+}
+#mobileCurrentPage {
+  font-size: 14px;
+  font-weight: 650;
+}
+.mobile-navigation-bar {
+  gap: 16px;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  box-shadow: var(--festival-shadow);
+}
+.card p {
+  font-size: 14px;
+  line-height: 1.7;
+}
+.card-link {
+  position: relative;
+  text-decoration: none;
+  color: var(--ink);
+  transition:
+    transform 0.16s,
+    border-color 0.16s,
+    box-shadow 0.16s;
+}
+.card-link:hover {
+  transform: translateY(-2px);
+  border-color: var(--festival-edge);
+  box-shadow: 0 8px 25px #623a2315;
+}
+.card-link h2,
+.card-link h3 {
+  color: var(--ink);
+}
+.card-link p {
+  margin-bottom: 0;
+}
+.overview-date {
+  margin: 0 0 22px;
+  padding: 10px 0 15px;
+  border-bottom: 1px dashed var(--festival-edge);
+  font-size: 13px;
+  font-weight: 550;
+}
+.overview-date a {
+  font-weight: 650;
+  text-underline-offset: 4px;
+}
+.overview-tasks {
+  position: relative;
+  overflow: hidden;
+  background: var(--festival-apricot);
+  border-color: var(--festival-edge);
+  padding: 25px 27px;
+  box-shadow: 0 4px 0 #623a2310;
+  border-radius: 19px;
+}
+.overview-tasks::after {
+  content: "";
+  position: absolute;
+  right: 17px;
+  top: 14px;
+  width: 78px;
+  height: 78px;
+  border: 1px dashed color-mix(in srgb, var(--wine), transparent 55%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.overview-tasks h2 {
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: -1px;
+  margin-bottom: 9px;
+  max-width: calc(100% - 78px);
+}
+.overview-tasks p {
+  max-width: calc(100% - 76px);
+  margin: 8px 0;
+  color: var(--ink);
+}
+.overview-tasks .actions {
+  position: relative;
+  z-index: 1;
+  margin-top: 20px;
+  gap: 10px;
+}
+.overview-tasks .button:not(.primary) {
+  background: var(--panel);
+}
+.festival-mark {
+  position: absolute;
+  right: 29px;
+  top: 26px;
+  width: 54px;
+  height: 54px;
+  color: var(--wine);
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+.overview-links a {
+  font-size: 13px;
+  font-weight: 600;
+  text-underline-offset: 4px;
+  padding: 8px 0;
+}
+.news-section.card {
+  padding: 23px 25px;
+  border-radius: 17px;
+  border-top: 1px solid var(--line);
+  box-shadow: var(--festival-shadow);
+}
+.news-section h2 {
+  font-size: 23px;
+}
+#updates .update {
+  padding: 19px 0;
+}
+#updates .update:last-child {
+  border-bottom: 0;
+}
+#updates .update small {
+  display: inline-block;
+  background: var(--festival-soft);
+  color: var(--muted);
+  border-radius: 20px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 650;
+}
+#updates .update h3 {
+  font-size: 18px;
+  line-height: 1.35;
+}
+#updates .update .actions {
+  gap: 8px;
+}
+#updates .update .button {
+  font-size: 12px;
+}
+/* Einheitliche Infokarten: Icon, Titel, ein klarer Pfeil. Keine wechselnden Farben. */
+#pages .card-link,
+.cms-area-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.festival-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.festival-card-icon,
+.cms-area-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--festival-soft);
+  color: var(--wine);
+  flex-shrink: 0;
+}
+.festival-card-icon .nav-icon {
+  width: 24px;
+  height: 24px;
+}
+.festival-card-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--wine);
+}
+.festival-card-arrow svg {
+  width: 16px;
+  height: 16px;
+}
+#pages .card-link h2 {
+  font-size: 21px;
+  margin-bottom: 8px;
+}
+.cms-area-card {
+  box-shadow: var(--festival-shadow);
+}
+.plan-section {
+  border-radius: 17px;
+  border-top: 3px solid var(--festival-edge);
+}
+.plan-section > h2 {
+  font-size: 26px;
+  letter-spacing: -0.9px;
+}
+.planning-finish {
+  background: var(--festival-soft);
+  border-color: var(--line);
+}
+.planning-finish .form-note {
+  margin-bottom: 0;
+}
+.planning-room {
+  border-bottom-style: dashed;
+}
+.optional-details {
+  border-top-style: dashed;
+}
+.optional-details > summary {
+  font-weight: 650;
+  color: var(--ink);
+}
+input,
+select,
+textarea {
+  border-radius: 10px;
+  background: var(--panel);
+  border-color: var(--line);
+}
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--wine);
+}
+label {
+  font-weight: 550;
+}
+textarea {
+  line-height: 1.65;
+}
+.save-state.saved {
+  border-radius: 9px;
+}
+.tag {
+  background: var(--festival-soft);
+  color: var(--ink);
+  border-radius: 20px;
+  padding: 5px 9px;
+}
+.bus-deadline {
+  background: var(--festival-soft);
+  border-left-color: var(--wine);
+  border-radius: 10px;
+  font-size: 13px;
+}
+.bus-deadline strong {
+  font-size: 13px;
+}
+.hotel-card {
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--festival-edge);
+  border-radius: 17px;
+  box-shadow: var(--festival-shadow);
+}
+body.dark .hotel-card {
+  border-color: var(--line);
+  border-top-color: var(--festival-edge);
+}
+.hotel-card .tag {
+  background: var(--festival-soft);
+}
+.booking-note {
+  border-radius: 10px;
+}
+.notification-card {
+  border-left: 4px solid var(--wine);
+}
+.empty {
+  border-radius: 16px;
+  background: var(--panel);
+}
+dialog {
+  border-radius: 20px;
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: 0 24px 90px #3920173d;
+}
+dialog::backdrop {
+  background: #20151163;
+  backdrop-filter: blur(3px);
+}
+#toast {
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--panel);
+}
+:focus-visible {
+  outline: 3px solid var(--wine);
+  outline-offset: 3px;
+}
+body.dark a {
+  color: #f3a5b5;
+}
+body.dark .eyebrow,
+body.dark #nav a > .nav-icon,
+body.dark .festival-card-icon,
+body.dark .festival-card-arrow,
+body.dark .cms-area-icon,
+body.dark .brand span {
+  color: #f3a5b5;
+}
+body.dark #nav a.active > .nav-icon {
+  color: #fff;
+}
+body.dark a.primary {
+  color: #fff;
+}
+body.dark .festival strong span {
+  color: #f3a5b5;
+}
+/* Safari: keine zu flachen nativen Selects. */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 46px;
+  padding: 12px 42px 12px 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23877980' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px 16px;
+}
+@media (max-width: 850px) {
+  header {
+    height: auto;
+    min-height: 64px;
+  }
+  #nav[data-mobile-open="true"] {
+    padding-top: 14px;
+  }
+  #nav .main-navigation,
+  #nav .utility-navigation {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+  #nav .utility-navigation {
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+  #nav a,
+  #nav .utility-navigation a {
+    grid-template-columns: 30px minmax(0, 1fr) auto;
+    gap: 12px;
+    padding: 9px 11px;
+    min-height: 48px;
+    font-size: 14px;
+    margin: 0;
+    flex: none;
+  }
+  .notice {
+    margin-bottom: 21px;
+  }
+}
+@media (max-width: 620px) {
+  header {
+    padding: 11px 16px;
+  }
+  .brand {
+    font-size: 29px;
+  }
+  header > div {
+    gap: 6px;
+  }
+  h1 {
+    font-size: 46px;
+    margin-bottom: 18px;
+    letter-spacing: 0.2px;
+  }
+  h2 {
+    font-size: 21px;
+  }
+  .card {
+    padding: 20px;
+    border-radius: 15px;
+  }
+  .card p {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .overview-tasks {
+    padding: 21px;
+  }
+  .overview-tasks h2 {
+    font-size: 25px;
+    max-width: calc(100% - 55px);
+  }
+  .overview-tasks p {
+    max-width: calc(100% - 35px);
+    font-size: 13px;
+  }
+  .overview-tasks .actions {
+    margin-top: 18px;
+    gap: 9px;
+  }
+  .overview-tasks .button {
+    font-size: 13px;
+  }
+  .overview-tasks::after {
+    width: 54px;
+    height: 54px;
+    right: 15px;
+    top: 17px;
+  }
+  .festival-mark {
+    right: 24px;
+    top: 26px;
+    width: 36px;
+    height: 36px;
+  }
+  .overview-date {
+    font-size: 12px;
+    gap: 8px;
+  }
+  .news-section.card {
+    padding: 19px 20px;
+  }
+  .news-section h2 {
+    font-size: 21px;
+  }
+  .plan-section > h2 {
+    font-size: 24px;
+  }
+  .planning-finish {
+    padding: 20px;
+  }
+  #pages .card {
+    padding: 19px;
+  }
+  #pages .card-link h2 {
+    font-size: 20px;
+  }
+  .festival-card-head {
+    margin-bottom: 14px;
+  }
+  .festival-card-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+  }
+  .festival-card-icon .nav-icon {
+    width: 22px;
+    height: 22px;
+  }
+  .cms-area-card h2 {
+    font-size: 20px;
+  }
+  dialog {
+    border-radius: 17px;
+  }
+  .article h2 {
+    font-size: 20px;
+  }
+  .article > h2:first-child {
+    margin-top: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  button,
+  .button,
+  .card-link {
+    transition: none;
+  }
+  .card-link:hover,
+  button:active,
+  .button:active {
+    transform: none;
+  }
+}
+
+/* Unterkunft: allgemeine Hinweise und vollständige Angebote einzeln aufklappen. */
+.booking-information {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.booking-information > summary,
+.hotel-card > summary.hotel-summary {
+  position: relative;
+  display: block;
+  list-style: none;
+  cursor: pointer;
+  min-height: 48px;
+  padding: 18px 48px 18px 20px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+.booking-information > summary::-webkit-details-marker,
+.hotel-card > summary.hotel-summary::-webkit-details-marker {
+  display: none;
+}
+.booking-information > summary::after,
+.hotel-card > summary.hotel-summary::after {
+  content: "";
+  position: absolute;
+  right: 21px;
+  top: 23px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--wine);
+  border-bottom: 2px solid var(--wine);
+  transform: rotate(45deg);
+}
+.booking-information[open] > summary::after,
+.hotel-card[open] > summary.hotel-summary::after {
+  transform: rotate(225deg);
+  top: 27px;
+}
+.booking-information[open] > summary,
+.hotel-card[open] > summary.hotel-summary {
+  border-bottom: 1px solid var(--line);
+}
+.booking-information-body {
+  padding: 0 20px 18px;
+}
+.booking-information-body h2 {
+  font-size: 18px;
+  margin-top: 20px;
+}
+.booking-information-body p {
+  font-size: 14px;
+  line-height: 1.65;
+}
+.booking-information-body > p:first-child {
+  margin-top: 16px;
+}
+.hotel-cards {
+  gap: 18px;
+  margin: 20px 0 28px;
+}
+.hotel-card {
+  padding: 0;
+  overflow: hidden;
+  align-self: start;
+}
+.hotel-card > summary.hotel-summary {
+  padding: 20px 48px 20px 20px;
+  margin: 0;
+  border-radius: 0;
+}
+.hotel-summary-top {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 9px;
+}
+.hotel-name {
+  font-family: Manrope, Inter, sans-serif;
+  font-size: 21px;
+  letter-spacing: -0.5px;
+  font-weight: 800;
+  line-height: 1.3;
+  color: var(--ink);
+}
+.hotel-summary-price {
+  display: block;
+  margin-top: 13px;
+  font-size: 14px;
+  font-weight: 550;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.hotel-offer-body {
+  padding: 0 20px 20px;
+}
+.hotel-offer-body > dl {
+  margin-top: 18px;
+}
+.hotel-offer-body .hotel-room-details {
+  margin-top: 18px;
+}
+.hotel-card .hotel-room-details[open] > summary {
+  border-bottom: 1px solid var(--line);
+}
+@media (max-width: 620px) {
+  .hotel-card {
+    padding: 0;
+  }
+  .hotel-card > summary.hotel-summary {
+    padding: 18px 45px 18px 18px;
+  }
+  .hotel-offer-body {
+    padding: 0 18px 18px;
+  }
+  .hotel-name {
+    font-size: 20px;
+  }
+  .hotel-summary-price {
+    font-size: 13px;
+  }
+  .hotel-cards {
+    gap: 14px;
+  }
+  .booking-information > summary {
+    padding-left: 18px;
+  }
+  .booking-information-body {
+    padding: 0 18px 16px;
+  }
+}
+
+.booking-information-body ul {
+  padding-left: 18px;
+  margin: 14px 0 10px;
+}
+.booking-information-body li {
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 9px 0;
+}
+.booking-information-body .form-note {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 13px 0 0;
+  padding-top: 11px;
+  border-top: 1px solid var(--line);
+}
+
+.page-back-row {
+  margin: 0 0 18px;
+}
+.page-back-row .button {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  text-align: left;
+  line-height: 1.4;
+}
+
+/* Neu und gelesen sind durch Text UND Gestaltung unterscheidbar. */
+.notification-toolbar,
+.notification-heading,
+.notification-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.notification-toolbar {
+  margin: 22px 0 10px;
+}
+.notification-toolbar p {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 650;
+}
+.notification-card {
+  border-left-color: var(--line);
+  margin-bottom: 15px;
+}
+.notification-card.notification-unread {
+  border-left-color: var(--wine);
+  background: var(--festival-soft);
+}
+.notification-read-label {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 650;
+}
+.notification-unread .notification-read-label {
+  background: var(--wine);
+  color: #fff;
+}
+.notification-heading small {
+  color: var(--muted);
+}
+.notification-actions {
+  justify-content: flex-start;
+}
+.notification-actions a {
+  font-size: 13px;
+  font-weight: 600;
+}
+.notification-actions button {
+  font-size: 12px;
+}
+.notification-actions button[hidden],
+#readAllNotifications[hidden] {
+  display: none !important;
+}
+#notificationReadStatus:empty {
+  display: none;
+}

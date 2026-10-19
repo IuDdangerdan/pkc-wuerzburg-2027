@@ -1,0 +1,1 @@
+ALTER TABLE `updates` ADD `notified_at` text;

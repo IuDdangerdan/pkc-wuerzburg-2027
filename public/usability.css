@@ -1,0 +1,238 @@
+/* Sichtbare Aufgaben und Navigation, ohne horizontales Scrollen. */
+.mobile-navigation-bar {
+  display: none;
+}
+#mobileUnread[hidden] {
+  display: none;
+}
+#nav[hidden] {
+  display: none !important;
+}
+nav .main-navigation,
+nav .utility-navigation {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+nav .utility-navigation {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  margin-top: 16px;
+}
+nav a {
+  white-space: normal;
+  min-width: 0;
+}
+nav a span {
+  overflow-wrap: anywhere;
+}
+nav a .nav-icon {
+  flex-shrink: 0;
+}
+.overview-date {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 12px 0 24px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.overview-tasks {
+  padding: 22px;
+}
+.overview-tasks h2 {
+  margin-bottom: 10px;
+}
+.overview-tasks .actions {
+  margin-bottom: 0;
+}
+.overview-links {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  font-size: 14px;
+}
+.optional-details {
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+  margin: 20px 0;
+}
+.optional-details > summary {
+  font-size: 14px;
+  cursor: pointer;
+  min-height: 32px;
+  line-height: 1.6;
+}
+.planning-finish {
+  margin: 0 0 24px;
+}
+.planning-finish > .primary {
+  min-height: 46px;
+}
+.planning-room {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 16px;
+}
+.planning-room p {
+  margin: 6px 0;
+  font-size: 13px;
+}
+.planning-room button {
+  margin-top: 10px;
+}
+.plan-rooms[hidden] {
+  display: none;
+}
+#memberPicker #finishMembers {
+  position: sticky;
+  bottom: 0;
+  margin-top: 10px;
+  width: 100%;
+  background: var(--panel);
+  font-weight: 600;
+}
+#planningForm .plan-section > h2 {
+  margin-bottom: 20px;
+}
+#planningForm input[type="search"] {
+  min-width: 0;
+}
+@media (max-width: 850px) {
+  .shell {
+    display: block;
+  }
+  aside {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  nav {
+    display: block;
+    overflow: visible;
+    white-space: normal;
+  }
+  nav .main-navigation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  nav .utility-navigation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+  nav a {
+    margin: 0;
+    min-height: 44px;
+    white-space: normal;
+  }
+  nav .utility-navigation a {
+    font-size: 12px;
+    flex: 1 1 auto;
+  }
+  .festival,
+  .aside-bottom {
+    display: none;
+  }
+  aside {
+    padding: 12px 16px;
+    min-height: 0;
+  }
+  header {
+    height: auto;
+    min-height: 64px;
+    padding: 12px 18px;
+    gap: 10px;
+  }
+  main {
+    padding-top: 20px;
+  }
+  .notice {
+    margin-bottom: 22px;
+  }
+}
+@media (max-width: 620px) {
+  .overview-tasks {
+    padding: 18px;
+  }
+  .overview-date {
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+  .overview-links {
+    flex-direction: column;
+    gap: 14px;
+  }
+  .planning-finish > .primary {
+    width: 100%;
+  }
+  .planning-finish {
+    padding: 18px;
+  }
+  .optional-details > summary {
+    min-height: 44px;
+  }
+  #nav {
+    display: block;
+    overflow: visible;
+  }
+  #nav a {
+    padding: 10px 12px;
+  }
+  .main-navigation a {
+    font-size: 13px;
+  }
+  #nav .utility-navigation a {
+    font-size: 12px;
+  }
+  .card-link h2 {
+    font-size: 19px;
+  }
+  .plan-rooms .form-note {
+    font-size: 12px;
+  }
+  header #identity {
+    font-size: 12px;
+    max-width: 110px;
+    overflow-wrap: anywhere;
+  }
+}
+@media (max-width: 850px) {
+  .mobile-navigation-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+  }
+  #mobileMenuToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    flex-shrink: 0;
+  }
+  #mobileCurrentPage {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+  #nav[data-mobile-open="false"] {
+    display: none;
+  }
+  #nav[data-mobile-open="true"] {
+    display: block;
+    padding-top: 12px;
+  }
+  #mobileUnread {
+    margin: 0;
+    width: 7px;
+    height: 7px;
+    background: var(--wine);
+    border-radius: 50%;
+  }
+}

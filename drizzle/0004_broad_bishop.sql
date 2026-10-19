@@ -1,0 +1,1 @@
+ALTER TABLE `updates` ADD `buttons` text DEFAULT '[]' NOT NULL;

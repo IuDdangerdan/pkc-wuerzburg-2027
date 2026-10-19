@@ -1,0 +1,1 @@
+ALTER TABLE `updates` ADD `archived` integer DEFAULT 0 NOT NULL;
