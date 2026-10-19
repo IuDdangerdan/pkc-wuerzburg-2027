@@ -26,6 +26,8 @@ API `action=seen` unterstützt eine Liste `ids` (maximal 100 je Request), aussch
 
 ## Usability-Überarbeitung vom 19.10.2026
 
+Grundlage: [Feedback-Auswertung vom 19.10.2026 (Excel)](docs/usability/PKC_Usability_Auswertung_2026-10-19.xlsx). Die Datei hält die Befunde der ersten Testrunde fest; der folgende Abschnitt beschreibt die daraus umgesetzten Änderungen. Ein erneuter Nutzertest des überarbeiteten Stands steht weiterhin aus.
+
 Bei einem tatsächlichen Seitenwechsel wird nach dem Rendern sofort und nochmals im nächsten Layout-Frame ganz nach oben gescrollt. Automatische Scroll-Wiederherstellung der Browser-History ist für die Hash-Navigation abgeschaltet. Das gilt auch beim Zurück-/Vorwärtswechsel; Speichern und andere Aktualisierungen derselben Seite sowie abgebrochene Navigation verändern die Scrollposition nicht.
 
 Umgesetzt ausschließlich in der privaten Hauptversion. Die öffentliche Testversion ist eine getrennte Kopie; Link, Datenbank und bisheriges Feedback bleiben unverändert.

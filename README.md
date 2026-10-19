@@ -6,6 +6,10 @@ Eigenständiges Festival-Wiki mit Planung, Zimmergemeinschaften und Orga-Verwalt
 
 **Für Martin:** [Stand, Grenzen und offene PKC-Integration](MARTIN_INTEGRATION.md). Anmeldung, Mitglieder, Rollen und Mailversand müssen später an die PKC-App angebunden werden.
 
+## Feedback und Usability
+
+[Feedback-Auswertung vom 19.10.2026 (Excel)](docs/usability/PKC_Usability_Auswertung_2026-10-19.xlsx) enthält die Auswertung der Website- und WhatsApp-Rückmeldungen aus der ersten Testrunde. Sie dokumentiert die damaligen Befunde; die später umgesetzten Änderungen stehen in `MARTIN_INTEGRATION.md`. Die Auswertung ist kein aktueller Test des überarbeiteten Stands.
+
 ## Orientierung im Code
 
 | Datei | Zuständigkeit |

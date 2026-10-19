@@ -8,8 +8,9 @@ Diese eigenständige Kopie ist für ein neues **privates GitHub-Repository** vor
 
 1. `README.md`: Dateien, Ladefolge, Entwicklung und Prüfungen.
 2. `MARTIN_INTEGRATION.md`: bestehende Funktionen, vorläufige Anmeldung/Rollen und erforderliche PKC-Anbindung.
+3. [Feedback-Auswertung vom 19.10.2026 (Excel)](docs/usability/PKC_Usability_Auswertung_2026-10-19.xlsx): Ergebnisse der ersten Testrunde als Hintergrund für die Überarbeitung.
 
-Nicht enthalten sind `.git` und dessen Verlauf/Remotes, installierte Pakete, Build-Ausgaben, lokale Laufzeitkonfigurationen, Zugangsdaten sowie lokale oder produktive Datenbanken. **Planungen, Fragen, Testfeedback, hochgeladene Dateien und der aktuelle Redaktionsstand der Live-Datenbank wurden nicht exportiert.** Die mitgelieferten JSON-Dateien sind Startwerte. Die drei ursprünglichen Hotel-PDFs liegen unter `public/documents/`.
+Nicht enthalten sind `.git` und dessen Verlauf/Remotes, installierte Pakete, Build-Ausgaben, lokale Laufzeitkonfigurationen, Zugangsdaten sowie lokale oder produktive Datenbanken. **Planungen, Fragen, rohe Testfeedback-Exporte, hochgeladene Dateien und der aktuelle Redaktionsstand der Live-Datenbank wurden nicht exportiert.** Die separat erstellte Excel-Feedback-Auswertung ist unter `docs/usability/` enthalten. Die mitgelieferten JSON-Dateien sind Startwerte. Die drei ursprünglichen Hotel-PDFs liegen unter `public/documents/`.
 
 Die Sites-Projekt-ID wurde aus `.openai/hosting.json` entfernt. Die nicht geheimen Bindungsnamen `DB` und `BUCKET` bleiben erhalten, weil die lokale Vite-Konfiguration sie verwendet. Diese Kopie kann nicht versehentlich unter der ursprünglichen Projekt-ID veröffentlicht werden.
 
