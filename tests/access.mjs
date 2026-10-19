@@ -1255,11 +1255,7 @@ assert.ok(
     n.message.includes("als Mitfahrer eingetragen"),
   ),
 );
-assert.equal(
-  (await post({ ...ridePlan, car_capacity: 3, car_passengers: ["pkc-7"] }))
-    .status,
-  400,
-); // Person already rides with someone else.
+
 assert.equal(
   (
     await post({
@@ -1359,4 +1355,147 @@ assert.equal(
 );
 console.log(
   "PASS: total car capacity, selected passengers, private synchronized plans, notifications, removal/leave, full cars, conflicts, stale lists and atomic rollback.",
+);
+
+// Korrekturen dürfen von Mitfahrenden und Fahrern erfolgen: letzte gültige Speicherung gilt.
+sql.exec("DELETE FROM plans; DELETE FROM notifications;");
+user = rideOwner;
+assert.equal(
+  (await post({ ...ridePlan, car_capacity: 1, car_passengers: ["pkc-6"] }))
+    .status,
+  200,
+);
+user = rideSecond;
+assert.equal(
+  (await post({ ...ridePlan, car_capacity: 1, car_passengers: ["pkc-6"] }))
+    .status,
+  200,
+);
+assert.equal(
+  sql.prepare("SELECT car_driver FROM plans WHERE member_id='pkc-6'").get()
+    .car_driver,
+  "pkc-7",
+);
+assert.equal(
+  sql.prepare("SELECT car_seats FROM plans WHERE member_id='pkc-37'").get()
+    .car_seats,
+  1,
+);
+assert.equal((await get()).data.plans[0].car_seats, 0);
+assert.deepEqual((await get()).data.plans[0].car_passengers, ["pkc-6"]);
+assert.ok(
+  sql
+    .prepare("SELECT message FROM notifications WHERE member_id='pkc-37'")
+    .all()
+    .some((n) => n.message.includes("fährt jetzt bei")),
+);
+user = ridePassenger;
+let restored = (await get()).data.plans[0];
+assert.equal(restored.mode, "Auto");
+assert.equal(restored.car_role, "Ich möchte mitfahren");
+assert.equal(restored.car_driver, "pkc-7");
+assert.ok(
+  (await get()).data.notifications.some((n) =>
+    n.message.includes("bisherige Anreise wurde"),
+  ),
+);
+assert.equal(
+  (
+    await post({
+      action: "planning",
+      status: "Gebucht",
+      mode: "Auto",
+      car_role: "Ich möchte mitfahren",
+      car_driver: "pkc-37",
+      bus: "Nein",
+      budget: "77",
+      rooms: [],
+    })
+  ).status,
+  200,
+);
+user = rideOwner;
+assert.equal(
+  (await get()).data.plans.find((p) => p.member_id === "pkc-37").car_seats,
+  0,
+);
+user = rideSecond;
+assert.equal((await get()).data.plans[0].car_seats, 1);
+const transferBefore = JSON.stringify(
+  sql.prepare("SELECT * FROM plans ORDER BY member_id").all(),
+);
+const noticesBefore = sql
+  .prepare("SELECT COUNT(*) AS n FROM notifications")
+  .get().n;
+assert.equal(
+  (await post({ ...ridePlan, car_capacity: 0, car_passengers: ["pkc-6"] }))
+    .status,
+  400,
+);
+assert.equal(
+  (
+    await post({
+      ...ridePlan,
+      car_capacity: 2,
+      car_passengers: ["pkc-6"],
+      rooms: [
+        {
+          hotel: "Invalid",
+          arrival: "2028-06-06",
+          departure: "2028-06-01",
+          memberIds: ["pkc-7"],
+        },
+      ],
+    })
+  ).status,
+  400,
+);
+assert.equal(
+  JSON.stringify(sql.prepare("SELECT * FROM plans ORDER BY member_id").all()),
+  transferBefore,
+);
+assert.equal(
+  sql.prepare("SELECT COUNT(*) AS n FROM notifications").get().n,
+  noticesBefore,
+);
+// Auch ein bisheriger Fahrer kann übernommen werden; seine Mitfahrer werden freigegeben.
+assert.equal(
+  (await post({ ...ridePlan, car_capacity: 2, car_passengers: ["pkc-37"] }))
+    .status,
+  200,
+);
+assert.equal(
+  sql.prepare("SELECT car_driver FROM plans WHERE member_id='pkc-37'").get()
+    .car_driver,
+  "pkc-7",
+);
+assert.equal(
+  sql.prepare("SELECT car_driver FROM plans WHERE member_id='pkc-6'").get()
+    .car_driver,
+  "",
+);
+assert.equal(
+  sql.prepare("SELECT budget FROM plans WHERE member_id='pkc-6'").get().budget,
+  "77",
+);
+assert.ok(
+  sql
+    .prepare("SELECT message FROM notifications WHERE member_id='pkc-6'")
+    .all()
+    .some((n) => n.message.includes("Fahrerwahl ist wieder offen")),
+);
+const repeatCount = sql
+  .prepare("SELECT COUNT(*) AS n FROM notifications")
+  .get().n;
+assert.equal(
+  (await post({ ...ridePlan, car_capacity: 2, car_passengers: ["pkc-37"] }))
+    .status,
+  200,
+);
+assert.equal(
+  sql.prepare("SELECT COUNT(*) AS n FROM notifications").get().n,
+  repeatCount,
+);
+console.log(
+  "PASS: driver/passenger corrections transfer membership, update both capacities, notify all affected people, persist on reload and roll back invalid/full-car transfers.",
 );

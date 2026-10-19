@@ -1348,17 +1348,6 @@ async function prepareTravelChanges(
     const capacity = b.car_capacity != null ? number(b.car_capacity) : null;
     if (capacity !== null && ids.length > capacity)
       throw Error("Mehr Mitfahrende als Mitfahrerplätze ausgewählt");
-    for (const id of ids) {
-      const p = all.find((p) => p.member_id === id);
-      if (p?.car_driver && p.car_driver !== member.id)
-        throw Error(
-          "Eine ausgewählte Person ist bereits einer anderen Fahrgemeinschaft zugeordnet. Bitte zuerst die bisherige Zuordnung ändern.",
-        );
-      if (p?.mode === "Auto" && p.car_role === "Ich fahre selbst")
-        throw Error(
-          "Eine ausgewählte Person hat angegeben, selbst zu fahren. Bitte zuerst ihre Planung ändern.",
-        );
-    }
   }
   const newDriver =
     b.mode === "Auto" && b.car_role === "Ich möchte mitfahren"
@@ -1385,6 +1374,46 @@ async function prepareTravelChanges(
         )
         .bind(crypto.randomUUID(), id, message, now),
     );
+  const affectedDrivers = new Set<string>(
+    [member.id, old?.car_driver].filter(Boolean),
+  );
+  // Eine neue ausdrückliche Zuordnung ersetzt die alte. Ausgewählte bisherige Fahrer
+  // geben ihre eigene Fahrgemeinschaft auf; nicht mit übernommene Mitfahrer werden informiert.
+  for (const id of ids) {
+    const previous = all.find((p) => p.member_id === id);
+    if (previous?.car_driver && previous.car_driver !== member.id) {
+      affectedDrivers.add(previous.car_driver);
+      const passengerName =
+        (
+          await db
+            .prepare("SELECT name FROM members WHERE id=?")
+            .bind(id)
+            .first()
+        )?.name || "Eine Person";
+      notify(
+        previous.car_driver,
+        `${passengerName} fährt jetzt bei ${member.name} mit. Deine Mitfahrerliste und freien Plätze wurden aktualisiert.`,
+      );
+    }
+    if (previous?.mode === "Auto" && previous.car_role === "Ich fahre selbst") {
+      affectedDrivers.add(id);
+      for (const p of all.filter(
+        (p) => p.car_driver === id && !ids.includes(p.member_id),
+      )) {
+        statements.push(
+          db
+            .prepare(
+              "UPDATE plans SET car_driver='',updated=? WHERE member_id=? AND car_driver=?",
+            )
+            .bind(now, p.member_id, id),
+        );
+        notify(
+          p.member_id,
+          "Deine bisherige Fahrperson wurde einer anderen Fahrgemeinschaft zugeordnet und fährt nicht mehr selbst. Deine Fahrerwahl ist wieder offen.",
+        );
+      }
+    }
+  }
   // Entfernte Zuordnungen zuerst lösen, damit eine kleinere Gesamtzahl nicht kurzzeitig überbelegt ist.
   for (const p of current.filter((p) => !ids.includes(p.member_id))) {
     statements.push(
@@ -1412,7 +1441,7 @@ async function prepareTravelChanges(
     );
     notify(
       id,
-      `${member.name} hat dich als Mitfahrer eingetragen. Deine Anreise wurde auf Auto und Mitfahrt bei ${member.name} angepasst. Du kannst die Zuordnung in „Meine Planung“ ändern.`,
+      `${member.name} hat dich als Mitfahrer eingetragen. Deine bisherige Anreise wurde durch Auto und Mitfahrt bei ${member.name} ersetzt. Du kannst die Zuordnung in „Meine Planung“ ändern.`,
     );
   }
   if ((old?.car_driver || "") !== newDriver) {
@@ -1427,9 +1456,8 @@ async function prepareTravelChanges(
         `${member.name} hat eine Mitfahrt bei dir eingetragen. Deine Mitfahrerliste und freien Plätze wurden aktualisiert.`,
       );
   }
-  for (const id of new Set(
-    [member.id, old?.car_driver, newDriver].filter(Boolean),
-  )) {
+  if (newDriver) affectedDrivers.add(newDriver);
+  for (const id of affectedDrivers) {
     statements.push(
       db
         .prepare(

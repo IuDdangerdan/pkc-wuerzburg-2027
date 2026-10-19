@@ -127,3 +127,22 @@ console.log(
 console.log(
   "PASS: new routes start at top, cancelled/same-page renders retain scroll, and obsolete animation callbacks cannot move a later route.",
 );
+
+// Ein sauberer Formular-Snapshot wird nicht als ungespeicherter Entwurf wiederverwendet.
+c.test.clear();
+storage.clear();
+vm.runInContext(
+  "planningDraft={values:{mode:'Veraltet'},rooms:[]};planningDirty=false;",
+  c,
+);
+assert.equal(c.test.readPlanningDraft(), null);
+let refreshCount = 0;
+c.load = async () => {
+  refreshCount++;
+};
+c.location.hash = "#plan";
+c.test.handleRouteChange();
+assert.equal(refreshCount, 1);
+console.log(
+  "PASS: clean planning snapshots do not hide server changes; returning to planning refreshes persisted assignments.",
+);

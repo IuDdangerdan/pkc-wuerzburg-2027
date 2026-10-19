@@ -328,7 +328,7 @@ assert.ok(html.includes("auch die schon belegten"));
 assert.ok(html.includes('id="passengersPicker"'));
 assert.ok(html.includes('name="car_passengers_before"'));
 assert.ok(!html.includes("Freie Plätze für weitere Mitfahrer"));
-assert.ok(html.includes("Sie erhalten eine Benachrichtigung"));
+assert.ok(html.includes("bisherige Fahrer werden benachrichtigt"));
 console.log(
   "PASS: car planning explains total seats, offers passenger selection and discloses updates/notifications.",
 );
