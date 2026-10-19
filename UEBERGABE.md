@@ -1,29 +1,31 @@
 # Übergabe an Martin
 
-Stand: 19.10.2026 · Quellstand `ec78b659b1005803f12cb3bd5e804999070af5e3`.
+Stand: 19.10.2026. Den jeweiligen Quellstand zeigt die Git-Commit-Historie; ein früherer einzelner Commit ist kein verlässlicher Verweis auf den aktuellen Stand.
 
-Diese eigenständige Kopie ist für ein neues **privates GitHub-Repository** vorbereitet. Sie enthält den aktuellen Quellcode, Paket-Lockdatei, SQL-Migrationen, Hotel-PDFs und Dokumentation. Die Kopie wird als eigenständiges Git-Repository geführt; die ursprüngliche Sites-Git-Historie wurde nicht übernommen. Der ursprüngliche Sites-Projektordner wurde nicht verändert.
+Dieses private Repository enthält den Integrationsstand der privaten Würzburg-Website. Anwendungscode, Tests, Schema, Migrationen und Assets werden mit der privaten Arbeitskopie abgeglichen. Die ursprüngliche Sites-Git-Historie und die Sites-Projekt-ID wurden nicht übernommen.
 
 ## Einstieg
 
-1. `README.md`: Dateien, Ladefolge, Entwicklung und Prüfungen.
-2. `MARTIN_INTEGRATION.md`: bestehende Funktionen, vorläufige Anmeldung/Rollen und erforderliche PKC-Anbindung.
-3. [Feedback-Auswertung vom 19.10.2026 (Excel)](docs/usability/PKC_Usability_Auswertung_2026-10-19.xlsx): Ergebnisse der ersten Testrunde als Hintergrund für die Überarbeitung.
+1. [README.md](README.md): Dateien, Ladefolge, Entwicklung, Prüfungen und Versionsvergleich.
+2. [MARTIN_INTEGRATION.md](MARTIN_INTEGRATION.md): Funktionen, Rollen, Datenschutz, Planungs-/Mitfahrerregeln und erforderliche PKC-Anbindung. Für einen Integrationsprompt diese Anforderungen ausdrücklich mitgeben.
+3. [Feedback-Auswertung (Excel)](docs/usability/PKC_Usability_Auswertung_2026-10-19.xlsx): Befunde der ersten Testrunde. Kein erneuter Nutzertest des aktuellen Stands.
 
-Nicht enthalten sind `.git` und dessen Verlauf/Remotes, installierte Pakete, Build-Ausgaben, lokale Laufzeitkonfigurationen, Zugangsdaten sowie lokale oder produktive Datenbanken. **Planungen, Fragen, rohe Testfeedback-Exporte, hochgeladene Dateien und der aktuelle Redaktionsstand der Live-Datenbank wurden nicht exportiert.** Die separat erstellte Excel-Feedback-Auswertung ist unter `docs/usability/` enthalten. Die mitgelieferten JSON-Dateien sind Startwerte. Die drei ursprünglichen Hotel-PDFs liegen unter `public/documents/`.
+## Was enthalten ist
 
-Die Sites-Projekt-ID wurde aus `.openai/hosting.json` entfernt. Die nicht geheimen Bindungsnamen `DB` und `BUCKET` bleiben erhalten, weil die lokale Vite-Konfiguration sie verwendet. Diese Kopie kann nicht versehentlich unter der ursprünglichen Projekt-ID veröffentlicht werden.
+Quellcode, Paket-Lockdatei, Datenbankschema und SQL-Migrationen, ursprüngliche Hotel-PDFs, Schriftlizenzen, Prüfungen und Dokumentation. Die drei Hotel-PDFs liegen in `public/documents/`. Startwerte stehen in `app/seed.json` und `app/cms-defaults.json`.
 
-Im Quellcode bleiben die vorbereitete Chorliste, Kontaktangaben und der dokumentierte Betreiber-Sonderfall für die eigenständige Version enthalten. Das sind keine Zugangsdaten. Martin ersetzt diese Übergangslösung bei der Integration durch PKC-Identität und Berechtigungen. Beispielwerte wie `user:password@example.org` in Tests sind absichtlich ungültige Testdaten.
+Nicht enthalten sind installierte Pakete, Build-Ausgaben, Compiler-Caches, Zugangsdaten, ursprüngliche Sites-Git-Metadaten sowie lokale oder produktive Datenbanken. **Planungen, Fragen, rohe Testfeedback-Exporte, später hochgeladene Dateien und der aktuelle Redaktionsstand der Live-Datenbank wurden nicht exportiert.** Eine gewünschte Datenübernahme ist separat zu planen.
 
-## GitHub vorbereiten
+Die vorbereitete Chorliste, Kontaktangaben und der Betreiber-Sonderfall bleiben als dokumentierte Übergangslösung im Quellcode. Sie sind keine Zugangsdaten und müssen durch PKC-Identität und Berechtigungen ersetzt werden.
 
-Diesen Ordner in VS Code öffnen, unter Quellcodeverwaltung ein Repository initialisieren, Dateien prüfen und den ersten Commit erstellen. Anschließend ein **privates** GitHub-Repository veröffentlichen. Erst danach Martin gezielt einladen. Die `.gitignore` schützt übliche lokale Dateien; neue Dateien vor jedem Commit weiterhin prüfen.
+## GitHub und Hosting
+
+Das Repository ist bereits privat veröffentlicht: [IuDdangerdan/pkc-wuerzburg-2027](https://github.com/IuDdangerdan/pkc-wuerzburg-2027). Es muss nicht erneut initialisiert oder angelegt werden. Martin benötigt eine gezielte GitHub-Einladung. Änderungen vor dem Commit prüfen; die `.gitignore` schließt übliche lokale Daten aus.
+
+Die GitHub-Kopie hat in `.openai/hosting.json` nur die lokalen Bindungsnamen `DB` und `BUCKET`. Damit verweist sie nicht auf Daniels bestehendes Sites-Projekt. GitHub-Upload und Website-Veröffentlichung sind getrennte Vorgänge. Die öffentliche Testversion ist veraltet und wird nicht automatisch mitgeändert.
 
 ## Technisch weiterarbeiten
 
-Für eine neue lokale Installation gelten Node >=22.13 und die Befehle aus der README. `node_modules` wird erst durch die Installation erzeugt. Anmeldung, Rollen, Datenhaltung und Mailversand sind noch nicht an die PKC-App angebunden. Vor produktiver Übernahme mit echten PKC-Konten testen. Eine gegebenenfalls gewünschte Übernahme aktueller Live-Inhalte ist separat zu planen.
+Node >=22.13 und die Befehle aus der README verwenden. Alle erforderlichen Migrationen anwenden: insbesondere 0009 für Gesamtplätze/Kapazitätsprüfungen und 0010 für die Busfrist **01.11.2026**. Anmeldung, Rollen, Datenhaltung und Mailversand sind noch nicht an die PKC-App angebunden.
 
-## Ergänzung: Fahrgemeinschaften
-
-Die Gesamtzahl der Mitfahrerplätze und die Auswahl bereits Mitfahrender sind ergänzt. Beim Speichern werden die Planungen ausgewählter Personen und In-App-Benachrichtigungen gemeinsam aktualisiert. Migration `0009_yielding_whizzer.sql` und die Integrationshinweise dazu übernehmen. Die Excel-Feedback-Auswertung bleibt unverändert enthalten.
+Nach der Integration soll Daniel mit Orga-Rechten Wiki, Neuigkeiten, Angebote, Fristen und Dateien direkt verwalten können. Technische Betreiberrechte dürfen dafür nicht nötig sein. Vor produktiver Übernahme die Abläufe mit echten PKC-Konten testen.

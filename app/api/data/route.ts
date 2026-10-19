@@ -1287,6 +1287,7 @@ async function prepareTravelChanges(
   input: any,
   now: string,
 ) {
+  // 1. Gespeicherten Stand lesen und sämtliche Eingaben prüfen; hier wird noch nichts geschrieben.
   const all: any[] = (await db.prepare("SELECT * FROM plans").all()).results;
   const old = all.find((p) => p.member_id === member.id);
   const driver = input.mode === "Auto" && input.car_role === "Ich fahre selbst";
@@ -1300,6 +1301,7 @@ async function prepareTravelChanges(
       p.mode === "Auto" &&
       p.car_role === "Ich möchte mitfahren",
   );
+  // Ganze Mitfahrerlisten aus einem veralteten Formular nicht still über neuere Änderungen schreiben.
   if (b.car_passengers_before !== undefined) {
     let before;
     try {
@@ -1369,14 +1371,14 @@ async function prepareTravelChanges(
       throw Error(
         "Die Gesamtzahl der Mitfahrerplätze ist bei dieser Person noch nicht bestätigt. Bitte zuerst ergänzen lassen.",
       );
-    if (target?.car_capacity != null) {
-      const occupied = all.filter(
-        (p) => p.car_driver === newDriver && p.member_id !== member.id,
-      ).length;
-      if (occupied >= target.car_capacity)
-        throw Error("Bei dieser Person ist kein Mitfahrerplatz mehr frei");
-    }
+    // Nach den obigen Prüfungen sind Fahrperson und Gesamtplatzzahl bestätigt.
+    const occupied = all.filter(
+      (p) => p.car_driver === newDriver && p.member_id !== member.id,
+    ).length;
+    if (occupied >= target.car_capacity)
+      throw Error("Bei dieser Person ist kein Mitfahrerplatz mehr frei");
   }
+  // 2. Ausschließlich Statements sammeln; der Aufrufer führt den vollständigen Batch atomar aus.
   const statements: any[] = [];
   const notify = (id: string, message: string) =>
     statements.push(
@@ -1386,6 +1388,21 @@ async function prepareTravelChanges(
         )
         .bind(crypto.randomUUID(), id, message, now),
     );
+  // Beide Freigabewege verwenden dieselbe Änderung samt Nachricht.
+  const releasePassenger = (
+    passengerId: string,
+    driverId: string,
+    message: string,
+  ) => {
+    statements.push(
+      db
+        .prepare(
+          "UPDATE plans SET car_driver='',updated=? WHERE member_id=? AND car_driver=?",
+        )
+        .bind(now, passengerId, driverId),
+    );
+    notify(passengerId, message);
+  };
   const affectedDrivers = new Set<string>(
     [member.id, old?.car_driver].filter(Boolean),
   );
@@ -1412,15 +1429,9 @@ async function prepareTravelChanges(
       for (const p of all.filter(
         (p) => p.car_driver === id && !ids.includes(p.member_id),
       )) {
-        statements.push(
-          db
-            .prepare(
-              "UPDATE plans SET car_driver='',updated=? WHERE member_id=? AND car_driver=?",
-            )
-            .bind(now, p.member_id, id),
-        );
-        notify(
+        releasePassenger(
           p.member_id,
+          id,
           "Deine bisherige Fahrperson wurde einer anderen Fahrgemeinschaft zugeordnet und fährt nicht mehr selbst. Deine Fahrerwahl ist wieder offen.",
         );
       }
@@ -1428,18 +1439,13 @@ async function prepareTravelChanges(
   }
   // Entfernte Zuordnungen zuerst lösen, damit eine kleinere Gesamtzahl nicht kurzzeitig überbelegt ist.
   for (const p of current.filter((p) => !ids.includes(p.member_id))) {
-    statements.push(
-      db
-        .prepare(
-          "UPDATE plans SET car_driver='',updated=? WHERE member_id=? AND car_driver=?",
-        )
-        .bind(now, p.member_id, member.id),
-    );
-    notify(
+    releasePassenger(
       p.member_id,
+      member.id,
       `${member.name} hat deine Mitfahrt aufgehoben. In deiner Planung ist die Fahrerwahl wieder offen.`,
     );
   }
+  // 3. Eigene Planung und neue Mitfahrer speichern; fremde Unterkunft/Budgets bleiben erhalten.
   statements.push(self);
   for (const id of ids.filter(
     (id) => !current.some((p) => p.member_id === id),
@@ -1468,6 +1474,7 @@ async function prepareTravelChanges(
         `${member.name} hat eine Mitfahrt bei dir eingetragen. Deine Mitfahrerliste und freien Plätze wurden aktualisiert.`,
       );
   }
+  // 4. Restplätze aus den endgültigen Zuordnungen berechnen, nicht schrittweise hoch-/herunterzählen.
   if (newDriver) affectedDrivers.add(newDriver);
   for (const id of affectedDrivers) {
     statements.push(

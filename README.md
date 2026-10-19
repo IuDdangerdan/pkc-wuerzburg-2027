@@ -74,6 +74,16 @@ Die Anwendungsdateien sind mit Prettier 3.6.2 formatiert. Ohne zusätzliche Proj
 npm exec --yes --package=prettier@3.6.2 -- prettier --write 'public/*.js' 'public/*.css' app/page.tsx app/layout.tsx app/api/data/route.ts 'tests/*.mjs' scripts/check-app.mjs
 ```
 
+## Vergleich mit dem GitHub-Stand
+
+Private Website und GitHub verwenden denselben Anwendungscode einschließlich Tests, Datenbankschema, Migrationen und Assets. Die GitHub-Kopie hat keine Sites-Projekt-ID und enthält zusätzlich die Übergabehinweise und Excel-Auswertung. Die bekannten Dokumentationsunterschiede sind im Vergleichsskript ausdrücklich begrenzt; andere Abweichungen führen zu einem Fehler.
+
+```sh
+node scripts/compare-versions.mjs /pfad/zur/privaten-kopie /pfad/zur/github-kopie
+```
+
+Dieser Vergleich prüft Dateien, nicht die Live-Datenbank: gespeicherte Planungen, Fragen, redaktionelle Änderungen und hochgeladene Dateien sind kein Bestandteil des GitHub-Exports. Historische Referenzdateien in `prototype-v1/` und SQL-Kompatibilitätsaktionen sind absichtlich erhalten. Die aktuelle Anwendung lädt ausschließlich die Skripte aus `app/page.tsx`.
+
 ## Anmeldung, Datenschutz und verbleibende Grenzen
 
 Die private Site nutzt die Sites-ChatGPT-Anmeldung. Die Chorliste ist eine vorbereitete Kopie ohne laufende Synchronisation. Neue Konten benötigen die serverseitige Zuordnung zu einem Mitglied. Der Betreiber ist vorläufig über seine E-Mail im Servercode festgelegt; er kann Rollen zuweisen. Die spätere PKC-Integration ersetzt diesen Adapter durch die übergeordnete App.
