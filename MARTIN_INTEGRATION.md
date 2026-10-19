@@ -209,7 +209,7 @@ Von Martin zu klären bzw. umzusetzen:
 
 - Mitfahrer können optional unter `car_driver` die Mitglieds-ID ihres bereits abgesprochenen Fahrers angeben (durchsuchbare Einzelauswahl; eigene Person ausgeschlossen). Keine automatische Platzreservierung oder Bestätigung. Angabe ist in Orga-Übersicht und CSV enthalten; beim Wechsel auf andere Reiseart oder Selbstfahren wird sie gelöscht. Für PKC das Mitgliederverzeichnis anbinden.
 
-- Rückmeldefrist für das unverbindliche Businteresse: **25.10.2026**. Sichtbar im Planungsformular, unter Gemeinsam anreisen sowie Anreise & Bus und Kosten & Fristen. Die Frist ist ein Rückmeldehinweis; spätere Eingaben werden nicht automatisch gesperrt.
+- Rückmeldefrist für das unverbindliche Businteresse: **01.11.2026**. Die Inhaltsmigration `0010_bus_deadline_20261101.sql` ändert den bisherigen CMS-Wert und aktuelle Bus-Neuigkeiten auf die neue Frist, ohne Benachrichtigungen auszulösen. Andere Einstellungen bleiben erhalten. Sichtbar im Planungsformular, unter Gemeinsam anreisen sowie Anreise & Bus und Kosten & Fristen. Die Frist ist ein Rückmeldehinweis; spätere Eingaben werden nicht automatisch gesperrt.
 
 ## Neuigkeiten verwalten
 Jedes Thema hat einen eigenen Eintrag. Orga kann Neuigkeiten entfernen und unter „Entfernte Neuigkeiten“ wiederherstellen. Technisch wird `updates.archived` gesetzt, damit Einträge bei erneutem Laden nicht wieder erscheinen. Normale Mitglieder sehen weder entfernte Einträge noch Verwaltungsaktionen; Berechtigung wird serverseitig geprüft.

@@ -195,7 +195,7 @@ async function applyFestivalNews(db: any) {
     )
     .bind(
       "bus-hostel-fristen-20261014",
-      "Wir möchten eine gemeinsame Busfahrt organisieren. Bitte gib bis zum 25.10.2026 unter „Meine Planung“ an, ob du Interesse hast – unverbindlich.\n\nBeim Babelfish Hostel läuft die Buchungsfrist für das Festival-Kontingent schon am 31.10.2026 ab. Angebote und Buchungsinfos findest du unter „Unterkunft & Buchung“.",
+      "Wir möchten eine gemeinsame Busfahrt organisieren. Bitte gib bis zum 01.11.2026 unter „Meine Planung“ an, ob du Interesse hast – unverbindlich.\n\nBeim Babelfish Hostel läuft die Buchungsfrist für das Festival-Kontingent schon am 31.10.2026 ab. Angebote und Buchungsinfos findest du unter „Unterkunft & Buchung“.",
       new Date().toISOString(),
       '[{"label": "Businteresse angeben", "url": "#plan"}]',
     )
@@ -219,7 +219,7 @@ async function splitFestivalNews(db: any) {
     db
       .prepare("UPDATE updates SET body=? WHERE id=?")
       .bind(
-        "Wir möchten eine gemeinsame Busfahrt organisieren. Bitte gib bis zum 25.10.2026 unter „Meine Planung“ an, ob du Interesse hast – unverbindlich.",
+        "Wir möchten eine gemeinsame Busfahrt organisieren. Bitte gib bis zum 01.11.2026 unter „Meine Planung“ an, ob du Interesse hast – unverbindlich.",
         "bus-hostel-fristen-20261014",
       ),
     db
