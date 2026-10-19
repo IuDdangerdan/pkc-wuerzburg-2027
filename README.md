@@ -43,6 +43,8 @@ Persistente Inhalte kommen aus D1. Orga-Änderungen werden über die Oberfläche
 
 Der Planungsentwurf liegt zusätzlich pro Mitglied und Vorschau getrennt in `sessionStorage`. Er ist weder ein Backup noch eine Rückmeldung an die Orga. Erst die gemeinsame Aktion `planning` speichert Planung, Zimmeränderungen und Partnerbenachrichtigungen atomar. Der Server prüft alle Angaben vor dem Schreiben. Die ältere Aktion `plan` bleibt für getrennte Formulare kompatibel und nutzt denselben Validator.
 
+Fahrgemeinschaften: Fahrer geben die Gesamtzahl der Mitfahrerplätze einschließlich belegter Plätze an (`car_capacity`). Ausgewählte Mitfahrende werden beim gemeinsamen Speichern automatisch über `car_driver` zugeordnet und benachrichtigt. Freie Plätze werden daraus berechnet. Migration 0009 erhält alte freie-Plätze-Werte und ergänzt Kapazitätsprüfungen. Details und PKC-Anbindung stehen in `MARTIN_INTEGRATION.md`.
+
 Neuigkeiten speichern und Mitglieder benachrichtigen sind getrennte Aktionen. Archivieren entfernt bereits zugestellte Nachrichten nicht. Gelesen-Zustände gehören jeweils zum eigenen Mitglied. Aktuell gibt es nur In-App-Nachrichten; der PKC-Maildienst ist noch nicht angebunden.
 
 ## Styles bearbeiten

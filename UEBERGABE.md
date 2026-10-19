@@ -1,6 +1,6 @@
 # Übergabe an Martin
 
-Stand: 19.10.2026 · Quellstand `01b5d3ce1ac753c9f060e323bc4b50a5437907a9`.
+Stand: 19.10.2026 · Quellstand `ec78b659b1005803f12cb3bd5e804999070af5e3`.
 
 Diese eigenständige Kopie ist für ein neues **privates GitHub-Repository** vorbereitet. Sie enthält den aktuellen Quellcode, Paket-Lockdatei, SQL-Migrationen, Hotel-PDFs und Dokumentation. Die Kopie wird als eigenständiges Git-Repository geführt; die ursprüngliche Sites-Git-Historie wurde nicht übernommen. Der ursprüngliche Sites-Projektordner wurde nicht verändert.
 
@@ -23,3 +23,7 @@ Diesen Ordner in VS Code öffnen, unter Quellcodeverwaltung ein Repository initi
 ## Technisch weiterarbeiten
 
 Für eine neue lokale Installation gelten Node >=22.13 und die Befehle aus der README. `node_modules` wird erst durch die Installation erzeugt. Anmeldung, Rollen, Datenhaltung und Mailversand sind noch nicht an die PKC-App angebunden. Vor produktiver Übernahme mit echten PKC-Konten testen. Eine gegebenenfalls gewünschte Übernahme aktueller Live-Inhalte ist separat zu planen.
+
+## Ergänzung: Fahrgemeinschaften
+
+Die Gesamtzahl der Mitfahrerplätze und die Auswahl bereits Mitfahrender sind ergänzt. Beim Speichern werden die Planungen ausgewählter Personen und In-App-Benachrichtigungen gemeinsam aktualisiert. Migration `0009_yielding_whizzer.sql` und die Integrationshinweise dazu übernehmen. Die Excel-Feedback-Auswertung bleibt unverändert enthalten.

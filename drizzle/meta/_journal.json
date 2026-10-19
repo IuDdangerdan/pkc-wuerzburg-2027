@@ -64,6 +64,13 @@
       "when": 1792185173358,
       "tag": "0008_little_tinkerer",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1792395308478,
+      "tag": "0009_yielding_whizzer",
+      "breakpoints": true
     }
   ]
 }

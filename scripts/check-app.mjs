@@ -14,6 +14,7 @@ for (const file of readdirSync("public")
 for (const file of [
   "content-ui",
   "planning-draft",
+  "car-passengers",
   "theme",
   "notifications",
   "access",

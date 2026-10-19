@@ -402,6 +402,18 @@ export async function GET(request?: Request) {
               .all()
           ).results
         : [];
+    // Nur eigene bzw. für Orga freigegebene Planungen um deren Mitfahrer ergänzen.
+    // Fremde Busbudgets und Unterkunftsstatus bleiben für Mitglieder weiterhin privat.
+    for (const plan of plans) {
+      plan.car_passengers = (
+        await db
+          .prepare(
+            "SELECT member_id FROM plans WHERE car_driver=? AND mode='Auto' AND car_role='Ich möchte mitfahren' ORDER BY member_id",
+          )
+          .bind(plan.member_id)
+          .all()
+      ).results.map((p: any) => p.member_id);
+    }
     const accounts = orga
       ? (
           await db
@@ -512,7 +524,7 @@ export async function POST(request: Request) {
         .map((r: any) => text(r.id, 100));
       if (new Set(ids).size !== ids.length)
         throw Error("Ein Zimmer ist mehrfach enthalten");
-      const statements = [await preparePlan(db, member, b, now)];
+      const statements = await prepareTravelChanges(db, member, b, now);
       for (const room of rooms) {
         const prepared = await prepareRoom(db, member, orga, room, now, ids);
         if (prepared instanceof Response) return prepared;
@@ -549,18 +561,27 @@ export async function POST(request: Request) {
           budget: existing?.budget || "",
           car_role: existing?.car_role || "",
           car_seats: existing?.car_seats ?? null,
+          car_capacity: existing?.car_capacity ?? null,
           car_driver: existing?.car_driver || "",
         };
         const keys =
           b.section === "lodging"
             ? ["status"]
-            : ["mode", "bus", "budget", "car_role", "car_seats", "car_driver"];
+            : [
+                "mode",
+                "bus",
+                "budget",
+                "car_role",
+                "car_seats",
+                "car_capacity",
+                "car_driver",
+              ];
         for (const key of Object.keys(saved))
           if (!keys.includes(key)) b[key] = (saved as any)[key];
         for (const key of keys)
           if (b[key] === undefined) b[key] = (saved as any)[key];
       }
-      await (await preparePlan(db, member, b, now)).run();
+      await db.batch(await prepareTravelChanges(db, member, b, now));
       return reply({ ok: true });
     }
     if (b.action === "room") {
@@ -1258,6 +1279,168 @@ async function cmsFile(
   return reply({ error: "Datei nicht verfügbar" }, 404);
 }
 
+// car_driver ist die einzige gespeicherte Mitgliedschaft einer Fahrgemeinschaft.
+// Änderungen und Nachrichten werden mit der eigenen Planung gemeinsam in db.batch geschrieben.
+async function prepareTravelChanges(
+  db: any,
+  member: any,
+  input: any,
+  now: string,
+) {
+  const all: any[] = (await db.prepare("SELECT * FROM plans").all()).results;
+  const old = all.find((p) => p.member_id === member.id);
+  const driver = input.mode === "Auto" && input.car_role === "Ich fahre selbst";
+  const b = { ...input };
+  if (driver && b.car_capacity === undefined && old?.car_capacity != null)
+    b.car_capacity = old.car_capacity;
+  const self = await preparePlan(db, member, b, now);
+  const current = all.filter(
+    (p) =>
+      p.car_driver === member.id &&
+      p.mode === "Auto" &&
+      p.car_role === "Ich möchte mitfahren",
+  );
+  if (b.car_passengers_before !== undefined) {
+    let before;
+    try {
+      before =
+        typeof b.car_passengers_before === "string"
+          ? JSON.parse(b.car_passengers_before)
+          : b.car_passengers_before;
+    } catch {
+      throw Error("Ungültiger Stand der Mitfahrerliste");
+    }
+    if (!Array.isArray(before) || before.some((id) => typeof id !== "string"))
+      throw Error("Ungültiger Stand der Mitfahrerliste");
+    if (
+      JSON.stringify([...before].sort()) !==
+      JSON.stringify(current.map((p) => p.member_id).sort())
+    )
+      throw Error(
+        "Die Mitfahrerliste wurde inzwischen geändert. Bitte lade die Seite neu und prüfe deine Auswahl.",
+      );
+  }
+  let ids: string[] = [];
+  if (driver) {
+    let values = b.car_passengers;
+    if (typeof values === "string") {
+      try {
+        values = JSON.parse(values);
+      } catch {
+        throw Error("Ungültige Mitfahrerauswahl");
+      }
+    }
+    if (values === undefined) values = current.map((p) => p.member_id);
+    if (
+      !Array.isArray(values) ||
+      values.length > 99 ||
+      values.some((id) => typeof id !== "string")
+    )
+      throw Error("Ungültige Mitfahrerauswahl");
+    ids = [...new Set<string>(values)];
+    if (ids.length !== values.length || ids.includes(member.id))
+      throw Error("Bitte andere Personen jeweils nur einmal auswählen");
+    const known = (
+      await db.prepare("SELECT id FROM members").all()
+    ).results.map((m: any) => m.id);
+    if (ids.some((id) => !known.includes(id)))
+      throw Error("Unbekannte mitfahrende Person");
+    const capacity = b.car_capacity != null ? number(b.car_capacity) : null;
+    if (capacity !== null && ids.length > capacity)
+      throw Error("Mehr Mitfahrende als Mitfahrerplätze ausgewählt");
+    for (const id of ids) {
+      const p = all.find((p) => p.member_id === id);
+      if (p?.car_driver && p.car_driver !== member.id)
+        throw Error(
+          "Eine ausgewählte Person ist bereits einer anderen Fahrgemeinschaft zugeordnet. Bitte zuerst die bisherige Zuordnung ändern.",
+        );
+      if (p?.mode === "Auto" && p.car_role === "Ich fahre selbst")
+        throw Error(
+          "Eine ausgewählte Person hat angegeben, selbst zu fahren. Bitte zuerst ihre Planung ändern.",
+        );
+    }
+  }
+  const newDriver =
+    b.mode === "Auto" && b.car_role === "Ich möchte mitfahren"
+      ? b.car_driver || ""
+      : "";
+  if (newDriver) {
+    const target = all.find((p) => p.member_id === newDriver);
+    if (target?.car_driver === member.id)
+      throw Error("Ihr könnt nicht gegenseitig Fahrer und Mitfahrer sein");
+    if (target?.car_capacity != null) {
+      const occupied = all.filter(
+        (p) => p.car_driver === newDriver && p.member_id !== member.id,
+      ).length;
+      if (occupied >= target.car_capacity)
+        throw Error("Bei dieser Person ist kein Mitfahrerplatz mehr frei");
+    }
+  }
+  const statements: any[] = [];
+  const notify = (id: string, message: string) =>
+    statements.push(
+      db
+        .prepare(
+          "INSERT INTO notifications(id,member_id,message,created,seen) VALUES(?,?,?,?,0)",
+        )
+        .bind(crypto.randomUUID(), id, message, now),
+    );
+  // Entfernte Zuordnungen zuerst lösen, damit eine kleinere Gesamtzahl nicht kurzzeitig überbelegt ist.
+  for (const p of current.filter((p) => !ids.includes(p.member_id))) {
+    statements.push(
+      db
+        .prepare(
+          "UPDATE plans SET car_driver='',updated=? WHERE member_id=? AND car_driver=?",
+        )
+        .bind(now, p.member_id, member.id),
+    );
+    notify(
+      p.member_id,
+      `${member.name} hat deine Mitfahrt aufgehoben. In deiner Planung ist die Fahrerwahl wieder offen.`,
+    );
+  }
+  statements.push(self);
+  for (const id of ids.filter(
+    (id) => !current.some((p) => p.member_id === id),
+  )) {
+    statements.push(
+      db
+        .prepare(
+          "INSERT INTO plans(member_id,status,mode,bus,budget,updated,car_role,car_driver) VALUES(?,'Noch offen','Auto','Noch offen','',?,'Ich möchte mitfahren',?) ON CONFLICT(member_id) DO UPDATE SET mode='Auto',car_role='Ich möchte mitfahren',car_driver=excluded.car_driver,car_seats=NULL,car_capacity=NULL,updated=excluded.updated",
+        )
+        .bind(id, now, member.id),
+    );
+    notify(
+      id,
+      `${member.name} hat dich als Mitfahrer eingetragen. Deine Anreise wurde auf Auto und Mitfahrt bei ${member.name} angepasst. Du kannst die Zuordnung in „Meine Planung“ ändern.`,
+    );
+  }
+  if ((old?.car_driver || "") !== newDriver) {
+    if (old?.car_driver)
+      notify(
+        old.car_driver,
+        `${member.name} fährt nicht mehr bei dir mit. Deine freien Mitfahrerplätze wurden aktualisiert.`,
+      );
+    if (newDriver)
+      notify(
+        newDriver,
+        `${member.name} hat eine Mitfahrt bei dir eingetragen. Deine Mitfahrerliste und freien Plätze wurden aktualisiert.`,
+      );
+  }
+  for (const id of new Set(
+    [member.id, old?.car_driver, newDriver].filter(Boolean),
+  )) {
+    statements.push(
+      db
+        .prepare(
+          "UPDATE plans SET car_seats=car_capacity-(SELECT COUNT(*) FROM plans passengers WHERE passengers.car_driver=plans.member_id AND passengers.mode='Auto' AND passengers.car_role='Ich möchte mitfahren') WHERE member_id=? AND mode='Auto' AND car_role='Ich fahre selbst' AND car_capacity IS NOT NULL",
+        )
+        .bind(id),
+    );
+  }
+  return statements;
+}
+
 // Validatoren bereiten Statements vor und schreiben nicht selbst. So bleiben Mehrfachänderungen atomar.
 async function preparePlan(db: any, member: any, b: any, now: string) {
   const status = choice(b.status, [
@@ -1280,14 +1463,21 @@ async function preparePlan(db: any, member: any, b: any, now: string) {
     mode === "Auto"
       ? choice(b.car_role, ["Ich fahre selbst", "Ich möchte mitfahren"])
       : "";
+  const hasCapacity = b.car_capacity !== undefined && b.car_capacity !== null;
   if (
     carRole === "Ich fahre selbst" &&
-    (b.car_seats === undefined ||
-      b.car_seats === null ||
-      String(b.car_seats).trim() === "")
+    String(hasCapacity ? b.car_capacity : (b.car_seats ?? "")).trim() === ""
   )
-    throw Error("Bitte freie Plätze angeben");
-  const carSeats = carRole === "Ich fahre selbst" ? number(b.car_seats) : null;
+    throw Error("Bitte die gesamte Zahl der Mitfahrerplätze ohne dich angeben");
+  // Alte car_seats-Werte waren freie Plätze. Nicht als Gesamtzahl umdeuten.
+  const carCapacity =
+    carRole === "Ich fahre selbst" && hasCapacity
+      ? number(b.car_capacity)
+      : null;
+  const carSeats =
+    carRole === "Ich fahre selbst"
+      ? (carCapacity ?? number(b.car_seats))
+      : null;
   const carDriver =
     carRole === "Ich möchte mitfahren" ? text(b.car_driver || "", 100) : "";
   if (
@@ -1301,7 +1491,7 @@ async function preparePlan(db: any, member: any, b: any, now: string) {
     throw Error("Bitte ein anderes Chormitglied auswählen");
   return db
     .prepare(
-      "INSERT INTO plans(member_id,status,mode,bus,budget,updated,car_role,car_seats,car_driver) VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(member_id) DO UPDATE SET status=excluded.status,mode=excluded.mode,bus=excluded.bus,budget=excluded.budget,updated=excluded.updated,car_role=excluded.car_role,car_seats=excluded.car_seats,car_driver=excluded.car_driver",
+      "INSERT INTO plans(member_id,status,mode,bus,budget,updated,car_role,car_seats,car_driver,car_capacity) VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(member_id) DO UPDATE SET status=excluded.status,mode=excluded.mode,bus=excluded.bus,budget=excluded.budget,updated=excluded.updated,car_role=excluded.car_role,car_seats=excluded.car_seats,car_driver=excluded.car_driver,car_capacity=excluded.car_capacity",
     )
     .bind(
       member.id,
@@ -1313,6 +1503,7 @@ async function preparePlan(db: any, member: any, b: any, now: string) {
       carRole,
       carSeats,
       carDriver,
+      carCapacity,
     );
 }
 

@@ -118,7 +118,7 @@ function renderNotifications() {
     title(
       "DEINE BENACHRICHTIGUNGEN",
       "Benachrichtigungen",
-      "Hinweise zu Neuigkeiten und Änderungen an deiner Zimmergemeinschaft.",
+      "Hinweise zu Neuigkeiten, deiner Zimmergemeinschaft und Fahrgemeinschaft.",
     ) +
     (state.notifications.length
       ? `<div class="notification-toolbar"><p id="notificationCount">${unread ? unread + " ungelesen" : "Alle gelesen"}</p>${!state.me.preview ? `<button id="readAllNotifications" type="button" ${unread ? "" : "hidden"}>Alle als gelesen markieren</button>` : ""}</div><p class="form-note">${state.me.preview ? "In der Mitglieder-Vorschau bleibt der Lesestatus unverändert." : "Sichtbare Einträge werden als gelesen markiert. Du kannst den Status auch über die Buttons setzen."}</p><p id="notificationReadStatus" class="form-note" role="status"></p>` +
@@ -128,7 +128,7 @@ function renderNotifications() {
             return `<section class="card update notification-card ${n.seen ? "" : "notification-unread"}" data-notification-id="${esc(n.id)}"><div class="notification-heading"><small>${esc(fmt(n.created))}</small><span class="notification-read-label">${n.seen ? "Gelesen" : "Neu"}</span></div><p>${esc(n.message)}</p><div class="notification-actions"><a href="${url}">${label}</a>${!state.me.preview ? `<button type="button" data-read-notification="${esc(n.id)}" ${n.seen ? "hidden" : ""}>Als gelesen markieren</button>` : ""}</div></section>`;
           })
           .join("")
-      : '<div class="empty">Noch keine Benachrichtigungen. Neuigkeiten und Änderungen an deiner Zimmergemeinschaft erscheinen hier.</div>');
+      : '<div class="empty">Noch keine Benachrichtigungen. Neuigkeiten und Änderungen an deiner Zimmer- oder Fahrgemeinschaft erscheinen hier.</div>');
   const all = document.querySelector("#readAllNotifications");
   if (all)
     all.onclick = () =>

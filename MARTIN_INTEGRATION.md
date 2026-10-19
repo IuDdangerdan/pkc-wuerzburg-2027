@@ -44,6 +44,18 @@ Umgesetzt ausschließlich in der privaten Hauptversion. Die öffentliche Testver
 
 Für die PKC-Integration denselben gemeinsamen Speicherabschluss mit Transaktion, eigener Identität, Zugriffsschutz und Entwurfskennzeichnung übernehmen. Session-Entwürfe müssen nach Kontowechsel isoliert bleiben; `sessionStorage` ist weder Backup noch Orga-Eingang. Zimmerbenachrichtigungen und spätere E-Mails erst nach erfolgreicher Speicherung auslösen. Browser-/Gerätetest ist vor Integration weiterhin erforderlich.
 
+## Fahrgemeinschaften: Gesamtplätze und Mitfahrer (19.10.2026)
+
+Bei „Ich fahre selbst“ zählt die Eingabe **alle Mitfahrerplätze ohne die fahrende Person**, einschließlich bereits belegter Plätze. `plans.car_capacity` speichert diese Gesamtzahl; `car_seats` ist bei bestätigter Gesamtzahl nur noch die berechnete Restzahl. Die bestehende freie-Plätze-Angabe wird nicht automatisch als Gesamtzahl interpretiert: Migration `0009_yielding_whizzer.sql` lässt `car_capacity` für Altbestände leer, und die Oberfläche bittet um erneute Angabe.
+
+Die suchbare Mehrfachauswahl „Wer fährt schon bei dir mit?“ bleibt bis „Planung speichern“ im Entwurf. Ausgewählte Mitglieder erhalten in ihrer eigenen Planung `mode=Auto`, `car_role=Ich möchte mitfahren` und `car_driver=<Fahrer-ID>`. Unterkunftsstatus, Businteresse und Budget bleiben erhalten. Die Zuordnung wird nur einmal über `car_driver` gespeichert; `car_passengers` wird für die eigene Planung bzw. die Orga daraus abgeleitet. Andere vollständige Planungen bleiben für normale Mitglieder privat.
+
+Neue Zuordnungen und das Entfernen von Mitfahrenden erzeugen In-App-Benachrichtigungen. Identisches erneutes Speichern benachrichtigt nicht noch einmal. Wer die Mitfahrt in der eigenen Planung ändert, aktualisiert dadurch auch die Liste/freien Plätze des bisherigen Fahrers und benachrichtigt diesen. Wer nicht mehr selbst fährt, löst bestehende Mitfahrerzuordnungen und benachrichtigt die Betroffenen. Entfernte Mitfahrende behalten Auto/Mitfahrwunsch, aber die Fahrerwahl ist wieder offen.
+
+Die API prüft bekannte Mitglieder, Selbstzuordnung, doppelte Einträge, bereits andere Fahrerzuordnungen und ausreichende Plätze. Ein bereits selbst fahrendes Mitglied wird nicht stillschweigend zum Mitfahrer umgewandelt. Veraltete übermittelte Mitfahrerlisten werden abgewiesen. Planung, Änderungen anderer Personen, Zimmer und Nachrichten werden in einer D1-Transaktion gespeichert; zusätzliche SQL-Trigger in Migration 0009 verhindern Überbelegung auch innerhalb der Transaktion. Diese Trigger bei Übernahme in ein anderes Backend durch gleichwertige Transaktions-/Kapazitätsprüfungen ersetzen. Orga-Ansicht und CSV zeigen Gesamtplätze, Mitfahrende und Restplätze getrennt.
+
+**Für Martin:** Migration und Zuordnung/Synchronisation serverseitig übernehmen. Der bestehende PKC-Maildienst muss später zusätzlich die Mitfahrt-Benachrichtigungen versenden; hier weiterhin nur In-App. Tests: `tests/car-passengers.mjs` und Fahrgemeinschaftsfälle in `tests/access.mjs`.
+
 ## Kurzfassung
 
 Das Würzburg-Modul ist eine eigenständige Umsetzung zur Abstimmung von Oberfläche und Abläufen. Es ist **noch kein Bestandteil der PKC-App**. Ohne Zugriff auf den PKC-Quellcode und eine abgestimmte Backend-Schnittstelle können wir die bestehende Anmeldung, Mitgliederverwaltung, Rollen und Benachrichtigungen nicht übernehmen.

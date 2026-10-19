@@ -1152,3 +1152,211 @@ assert.equal((await post({ action: "seen", ids: [] })).status, 200);
 console.log(
   "PASS: read receipts affect only supplied own notifications; other/new notifications stay unread; invalid batches rejected.",
 );
+
+// Fahrgemeinschaften: getrennte Kapazität, synchronisierte Mitfahrende und atomare Nachrichten.
+sql.exec("DELETE FROM plans; DELETE FROM notifications;");
+sql
+  .prepare("UPDATE members SET user_id='ride-passenger' WHERE id='pkc-6'")
+  .run();
+sql.prepare("UPDATE members SET user_id='ride-second' WHERE id='pkc-7'").run();
+const rideOwner = {
+  userId: "owner-test",
+  email: "daniel95schaefer@gmail.com",
+  displayName: "Daniel",
+};
+const ridePassenger = {
+  userId: "ride-passenger",
+  email: "ride@test.invalid",
+  displayName: "Jules",
+};
+const rideSecond = {
+  userId: "ride-second",
+  email: "second@test.invalid",
+  displayName: "Laura",
+};
+const ridePlan = {
+  action: "planning",
+  status: "Noch offen",
+  mode: "Auto",
+  car_role: "Ich fahre selbst",
+  car_capacity: 4,
+  car_passengers: ["pkc-6", "pkc-7"],
+  bus: "Nein",
+  budget: "",
+  rooms: [],
+};
+sql
+  .prepare(
+    "INSERT INTO plans(member_id,status,mode,bus,budget,updated) VALUES('pkc-6','Gebucht','Bahn','Vielleicht, je nach Preis','123','before')",
+  )
+  .run();
+user = rideOwner;
+assert.equal((await post(ridePlan)).status, 200);
+let rideData = (await get()).data;
+let driver = rideData.plans.find((p) => p.member_id === "pkc-37");
+assert.equal(driver.car_capacity, 4);
+assert.equal(driver.car_seats, 2);
+assert.deepEqual(driver.car_passengers, ["pkc-6", "pkc-7"]);
+let passenger = rideData.plans.find((p) => p.member_id === "pkc-6");
+assert.equal(passenger.mode, "Auto");
+assert.equal(passenger.car_role, "Ich möchte mitfahren");
+assert.equal(passenger.car_driver, "pkc-37");
+assert.equal(passenger.status, "Gebucht");
+assert.equal(passenger.bus, "Vielleicht, je nach Preis");
+assert.equal(passenger.budget, "123");
+assert.equal(
+  rideData.plans.find((p) => p.member_id === "pkc-7").status,
+  "Noch offen",
+);
+assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM notifications").get().n, 2);
+assert.equal((await post(ridePlan)).status, 200);
+assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM notifications").get().n, 2);
+for (const bad of [
+  { ...ridePlan, car_capacity: 1 },
+  { ...ridePlan, car_capacity: "" },
+  { ...ridePlan, car_capacity: -1 },
+  { ...ridePlan, car_passengers: ["pkc-37"] },
+  { ...ridePlan, car_passengers: ["unknown"] },
+  { ...ridePlan, car_passengers: ["pkc-6", "pkc-6"] },
+  { ...ridePlan, car_passengers: "invalid" },
+  { ...ridePlan, car_passengers_before: [] },
+  {
+    ...ridePlan,
+    rooms: [
+      {
+        hotel: "Invalid",
+        arrival: "2028-06-06",
+        departure: "2028-06-01",
+        memberIds: ["pkc-37"],
+      },
+    ],
+  },
+]) {
+  const before = JSON.stringify(
+    sql.prepare("SELECT * FROM plans ORDER BY member_id").all(),
+  );
+  const count = sql.prepare("SELECT COUNT(*) AS n FROM notifications").get().n;
+  assert.equal((await post(bad)).status, 400);
+  assert.equal(
+    JSON.stringify(sql.prepare("SELECT * FROM plans ORDER BY member_id").all()),
+    before,
+  );
+  assert.equal(
+    sql.prepare("SELECT COUNT(*) AS n FROM notifications").get().n,
+    count,
+  );
+}
+user = ridePassenger;
+rideData = (await get()).data;
+assert.equal(rideData.plans.length, 1);
+assert.equal(rideData.plans[0].car_driver, "pkc-37");
+assert.ok(
+  rideData.notifications.some((n) =>
+    n.message.includes("als Mitfahrer eingetragen"),
+  ),
+);
+assert.equal(
+  (await post({ ...ridePlan, car_capacity: 3, car_passengers: ["pkc-7"] }))
+    .status,
+  400,
+); // Person already rides with someone else.
+assert.equal(
+  (
+    await post({
+      action: "planning",
+      status: "Gebucht",
+      mode: "Bahn",
+      bus: "Vielleicht, je nach Preis",
+      budget: "123",
+      rooms: [],
+    })
+  ).status,
+  200,
+);
+user = rideOwner;
+driver = (await get()).data.plans.find((p) => p.member_id === "pkc-37");
+assert.equal(driver.car_seats, 3);
+assert.deepEqual(driver.car_passengers, ["pkc-7"]);
+assert.ok(
+  (await get()).data.notifications.some((n) =>
+    n.message.includes("nicht mehr bei dir"),
+  ),
+);
+assert.equal(
+  (await post({ ...ridePlan, car_capacity: 1, car_passengers: ["pkc-7"] }))
+    .status,
+  200,
+);
+user = ridePassenger;
+assert.equal(
+  (
+    await post({
+      action: "planning",
+      status: "Gebucht",
+      mode: "Auto",
+      car_role: "Ich möchte mitfahren",
+      car_driver: "pkc-37",
+      bus: "Nein",
+      budget: "",
+      rooms: [],
+    })
+  ).status,
+  400,
+);
+// Database guard also catches overbooking inside a transaction, after application validation.
+assert.throws(
+  () =>
+    sql
+      .prepare(
+        "UPDATE plans SET mode='Auto',car_role='Ich möchte mitfahren',car_driver='pkc-37' WHERE member_id='pkc-6'",
+      )
+      .run(),
+  /Gesamtzahl/,
+);
+assert.equal(
+  sql.prepare("SELECT car_driver FROM plans WHERE member_id='pkc-6'").get()
+    .car_driver,
+  "",
+);
+user = rideOwner;
+assert.equal(
+  (await post({ ...ridePlan, car_capacity: 0, car_passengers: [] })).status,
+  200,
+);
+user = rideSecond;
+rideData = (await get()).data;
+assert.equal(rideData.plans[0].car_driver, "");
+assert.ok(
+  rideData.notifications.some((n) => n.message.includes("Mitfahrt aufgehoben")),
+);
+user = rideOwner;
+assert.equal(
+  (await post({ ...ridePlan, car_passengers: ["pkc-6"] })).status,
+  200,
+);
+assert.equal(
+  (
+    await post({
+      action: "planning",
+      status: "Noch offen",
+      mode: "Bahn",
+      bus: "Nein",
+      budget: "",
+      rooms: [],
+    })
+  ).status,
+  200,
+);
+assert.equal(
+  sql.prepare("SELECT car_driver FROM plans WHERE member_id='pkc-6'").get()
+    .car_driver,
+  "",
+);
+assert.equal(
+  sql.prepare("SELECT car_capacity FROM plans WHERE member_id='pkc-37'").get()
+    .car_capacity,
+  null,
+);
+console.log(
+  "PASS: total car capacity, selected passengers, private synchronized plans, notifications, removal/leave, full cars, conflicts, stale lists and atomic rollback.",
+);

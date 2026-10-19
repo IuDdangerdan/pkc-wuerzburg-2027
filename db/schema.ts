@@ -1,14 +1,94 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
-export const members=sqliteTable('members',{id:text('id').primaryKey(),name:text('name').notNull(),userId:text('user_id').unique(),role:text('role').notNull().default('member')});
-export const accounts=sqliteTable('accounts',{id:text('id').primaryKey(),name:text('name').notNull(),email:text('email').notNull()});
-export const rooms=sqliteTable('rooms',{id:text('id').primaryKey(),owner:text('owner').notNull(),hotel:text('hotel').notNull(),arrival:text('arrival').notNull(),departure:text('departure').notNull(),number:text('number').notNull().default(''),spaces:integer('spaces').notNull().default(0),memberIds:text('member_ids').notNull(),updated:text('updated').notNull()});
-export const plans=sqliteTable('plans',{memberId:text('member_id').primaryKey(),status:text('status').notNull(),mode:text('mode').notNull(),bus:text('bus').notNull(),carRole:text('car_role').notNull().default(''),carSeats:integer('car_seats'),carDriver:text('car_driver').notNull().default(''),budget:text('budget').notNull().default(''),updated:text('updated').notNull()});
-export const notifications=sqliteTable('notifications',{id:text('id').primaryKey(),memberId:text('member_id').notNull(),message:text('message').notNull(),created:text('created').notNull(),seen:integer('seen').notNull().default(0)});
-export const wiki=sqliteTable('wiki',{id:text('id').primaryKey(),archived:integer('archived').notNull().default(0),summary:text('summary').notNull().default(''),position:integer('position').notNull().default(0),title:text('title').notNull(),body:text('body').notNull(),updated:text('updated').notNull(),history:text('history').notNull().default('[]')});
-export const updates=sqliteTable('updates',{id:text('id').primaryKey(),notifiedAt:text('notified_at'),title:text('title').notNull().default(''),archived:integer('archived').notNull().default(0),buttons:text('buttons').notNull().default('[]'),body:text('body').notNull(),created:text('created').notNull()});
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+export const members = sqliteTable("members", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  userId: text("user_id").unique(),
+  role: text("role").notNull().default("member"),
+});
+export const accounts = sqliteTable("accounts", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+});
+export const rooms = sqliteTable("rooms", {
+  id: text("id").primaryKey(),
+  owner: text("owner").notNull(),
+  hotel: text("hotel").notNull(),
+  arrival: text("arrival").notNull(),
+  departure: text("departure").notNull(),
+  number: text("number").notNull().default(""),
+  spaces: integer("spaces").notNull().default(0),
+  memberIds: text("member_ids").notNull(),
+  updated: text("updated").notNull(),
+});
+export const plans = sqliteTable("plans", {
+  memberId: text("member_id").primaryKey(),
+  status: text("status").notNull(),
+  mode: text("mode").notNull(),
+  bus: text("bus").notNull(),
+  carRole: text("car_role").notNull().default(""),
+  carSeats: integer("car_seats"),
+  carCapacity: integer("car_capacity"),
+  carDriver: text("car_driver").notNull().default(""),
+  budget: text("budget").notNull().default(""),
+  updated: text("updated").notNull(),
+});
+export const notifications = sqliteTable("notifications", {
+  id: text("id").primaryKey(),
+  memberId: text("member_id").notNull(),
+  message: text("message").notNull(),
+  created: text("created").notNull(),
+  seen: integer("seen").notNull().default(0),
+});
+export const wiki = sqliteTable("wiki", {
+  id: text("id").primaryKey(),
+  archived: integer("archived").notNull().default(0),
+  summary: text("summary").notNull().default(""),
+  position: integer("position").notNull().default(0),
+  title: text("title").notNull(),
+  body: text("body").notNull(),
+  updated: text("updated").notNull(),
+  history: text("history").notNull().default("[]"),
+});
+export const updates = sqliteTable("updates", {
+  id: text("id").primaryKey(),
+  notifiedAt: text("notified_at"),
+  title: text("title").notNull().default(""),
+  archived: integer("archived").notNull().default(0),
+  buttons: text("buttons").notNull().default("[]"),
+  body: text("body").notNull(),
+  created: text("created").notNull(),
+});
 
-export const questions=sqliteTable('questions',{id:text('id').primaryKey(),memberId:text('member_id').notNull(),body:text('body').notNull(),created:text('created').notNull()});
+export const questions = sqliteTable("questions", {
+  id: text("id").primaryKey(),
+  memberId: text("member_id").notNull(),
+  body: text("body").notNull(),
+  created: text("created").notNull(),
+});
 
-export const contentSettings=sqliteTable('content_settings',{id:text('id').primaryKey(),data:text('data').notNull(),history:text('history').notNull().default('[]'),updated:text('updated').notNull()});
-export const hotelOffers=sqliteTable('hotel_offers',{id:text('id').primaryKey(),data:text('data').notNull(),position:integer('position').notNull().default(0),archived:integer('archived').notNull().default(0),updated:text('updated').notNull()});
-export const documents=sqliteTable('documents',{id:text('id').primaryKey(),label:text('label').notNull(),name:text('name').notNull(),storageKey:text('storage_key'),legacyPath:text('legacy_path'),mime:text('mime').notNull().default('application/pdf'),size:integer('size').notNull().default(0),archived:integer('archived').notNull().default(0),history:text('history').notNull().default('[]'),updated:text('updated').notNull()});
+export const contentSettings = sqliteTable("content_settings", {
+  id: text("id").primaryKey(),
+  data: text("data").notNull(),
+  history: text("history").notNull().default("[]"),
+  updated: text("updated").notNull(),
+});
+export const hotelOffers = sqliteTable("hotel_offers", {
+  id: text("id").primaryKey(),
+  data: text("data").notNull(),
+  position: integer("position").notNull().default(0),
+  archived: integer("archived").notNull().default(0),
+  updated: text("updated").notNull(),
+});
+export const documents = sqliteTable("documents", {
+  id: text("id").primaryKey(),
+  label: text("label").notNull(),
+  name: text("name").notNull(),
+  storageKey: text("storage_key"),
+  legacyPath: text("legacy_path"),
+  mime: text("mime").notNull().default("application/pdf"),
+  size: integer("size").notNull().default(0),
+  archived: integer("archived").notNull().default(0),
+  history: text("history").notNull().default("[]"),
+  updated: text("updated").notNull(),
+});

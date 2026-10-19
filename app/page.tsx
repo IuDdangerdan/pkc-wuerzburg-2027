@@ -81,20 +81,20 @@ export default async function Page() {
       </div>
       <div id="toast" role="status" />
       <dialog id="modal" />
-      <script src="/theme.js?v=structure-1" defer />
-      <script src="/app.js?v=structure-1" defer />
-      <script src="/wiki.js?v=structure-1" defer />
-      <script src="/cms.js?v=structure-1" defer />
-      <script src="/lodging.js?v=structure-1" defer />
-      <script src="/travel.js?v=structure-1" defer />
-      <script src="/questions.js?v=structure-1" defer />
-      <script src="/news.js?v=structure-1" defer />
-      <script src="/orga.js?v=structure-1" defer />
-      <script src="/planning.js?v=structure-1" defer />
-      <script src="/navigation.js?v=structure-1" defer />
-      <script src="/pages.js?v=structure-1" defer />
-      <script src="/notifications.js?v=structure-1" defer />
-      <script src="/bootstrap.js?v=structure-1" defer />
+      <script src="/theme.js?v=car-passengers-1" defer />
+      <script src="/app.js?v=car-passengers-1" defer />
+      <script src="/wiki.js?v=car-passengers-1" defer />
+      <script src="/cms.js?v=car-passengers-1" defer />
+      <script src="/lodging.js?v=car-passengers-1" defer />
+      <script src="/travel.js?v=car-passengers-1" defer />
+      <script src="/questions.js?v=car-passengers-1" defer />
+      <script src="/news.js?v=car-passengers-1" defer />
+      <script src="/orga.js?v=car-passengers-1" defer />
+      <script src="/planning.js?v=car-passengers-1" defer />
+      <script src="/navigation.js?v=car-passengers-1" defer />
+      <script src="/pages.js?v=car-passengers-1" defer />
+      <script src="/notifications.js?v=car-passengers-1" defer />
+      <script src="/bootstrap.js?v=car-passengers-1" defer />
     </>
   );
 }

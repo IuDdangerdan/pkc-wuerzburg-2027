@@ -309,3 +309,26 @@ assert.ok(news.includes("Alle Neuigkeiten (3)"));
 console.log(
   "PASS: shared planning save/status, prominent question form, grouped navigation and limited news; labeled mobile tables retained.",
 );
+
+fixture.plans = [
+  {
+    member_id: "pkc-37",
+    mode: "Auto",
+    car_role: "Ich fahre selbst",
+    car_capacity: 4,
+    car_seats: 2,
+    car_passengers: ["pkc-6", "pkc-7"],
+  },
+];
+context.ui.setState(fixture);
+context.ui.plan();
+html = node("#content").innerHTML;
+assert.ok(html.includes("Mitfahrerplätze insgesamt (ohne dich)"));
+assert.ok(html.includes("auch die schon belegten"));
+assert.ok(html.includes('id="passengersPicker"'));
+assert.ok(html.includes('name="car_passengers_before"'));
+assert.ok(!html.includes("Freie Plätze für weitere Mitfahrer"));
+assert.ok(html.includes("Sie erhalten eine Benachrichtigung"));
+console.log(
+  "PASS: car planning explains total seats, offers passenger selection and discloses updates/notifications.",
+);
