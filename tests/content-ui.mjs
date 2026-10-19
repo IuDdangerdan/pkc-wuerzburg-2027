@@ -368,3 +368,13 @@ assert.equal(node("#private_place").disabled, true);
 console.log(
   "PASS: one editable accommodation instead of multiple add buttons, optional private location and explicit roommate departure notice.",
 );
+
+fixture.plans = [];
+context.ui.setState(fixture);
+context.ui.plan();
+assert.ok(
+  node("#content").innerHTML.includes("<option selected>Gebucht</option>"),
+);
+console.log(
+  "PASS: a room assigned by someone else is shown as booked even before an own planning response exists.",
+);

@@ -105,7 +105,11 @@ window.addEventListener("beforeunload", (e) => {
 function renderPlanning() {
   const saved = state.plans.find((p) => p.member_id === state.me.id) || {},
     draft = readPlanningDraft();
-  const p = draft?.values || saved;
+  // Eine von Zimmerpartnern gespeicherte Zuordnung muss auch ohne eigene Statusmeldung sichtbar sein.
+  const p = draft?.values || {
+    ...saved,
+    status: mine().length ? "Gebucht" : saved.status,
+  };
   if (!planningDraft) planningDraft = { values: { ...saved }, rooms: [] };
   $("#content").innerHTML =
     title("DEIN WOCHENENDE", "Meine Planung", cfg("planIntro")) +
