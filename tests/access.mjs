@@ -273,6 +273,13 @@ console.log(
   "PASS: private question inbox and notifications; conditional car requirements, seat validation and stale-field clearing.",
 );
 
+// Mitfahrten benötigen eine bestätigte Fahrerplanung mit Gesamtplätzen.
+await post({
+  ...plan,
+  car_role: "Ich fahre selbst",
+  car_capacity: 3,
+  car_passengers: [],
+});
 user = {
   userId: "jules-test",
   email: "jules@test.invalid",
@@ -913,6 +920,7 @@ await post({
   bus: "Ja",
   budget: "120",
   car_role: "Ich fahre selbst",
+  car_capacity: 2,
   car_seats: 2,
 });
 await post({
@@ -1498,4 +1506,39 @@ assert.equal(
 );
 console.log(
   "PASS: driver/passenger corrections transfer membership, update both capacities, notify all affected people, persist on reload and roll back invalid/full-car transfers.",
+);
+
+user = ridePassenger;
+assert.equal(
+  (
+    await post({
+      action: "planning",
+      status: "Gebucht",
+      mode: "Auto",
+      car_role: "Ich möchte mitfahren",
+      car_driver: "pkc-37",
+      bus: "Nein",
+      budget: "",
+      rooms: [],
+    })
+  ).status,
+  400,
+); // target is itself a passenger
+assert.equal(
+  (
+    await post({
+      action: "planning",
+      status: "Gebucht",
+      mode: "Auto",
+      car_role: "Ich möchte mitfahren",
+      car_driver: "pkc-8",
+      bus: "Nein",
+      budget: "",
+      rooms: [],
+    })
+  ).status,
+  400,
+); // no confirmed driver plan
+console.log(
+  "PASS: selecting a passenger or an unconfirmed driver is rejected, preserving actual car capacity checks.",
 );

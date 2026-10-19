@@ -1357,6 +1357,18 @@ async function prepareTravelChanges(
     const target = all.find((p) => p.member_id === newDriver);
     if (target?.car_driver === member.id)
       throw Error("Ihr könnt nicht gegenseitig Fahrer und Mitfahrer sein");
+    if (
+      !target ||
+      target.mode !== "Auto" ||
+      target.car_role !== "Ich fahre selbst"
+    )
+      throw Error(
+        "Diese Person hat noch nicht angegeben, selbst mit dem Auto zu fahren. Bitte zuerst ihre Planung aktualisieren.",
+      );
+    if (target.car_capacity == null)
+      throw Error(
+        "Die Gesamtzahl der Mitfahrerplätze ist bei dieser Person noch nicht bestätigt. Bitte zuerst ergänzen lassen.",
+      );
     if (target?.car_capacity != null) {
       const occupied = all.filter(
         (p) => p.car_driver === newDriver && p.member_id !== member.id,
