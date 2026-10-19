@@ -26,6 +26,6 @@ Die GitHub-Kopie hat in `.openai/hosting.json` nur die lokalen Bindungsnamen `DB
 
 ## Technisch weiterarbeiten
 
-Node >=22.13 und die Befehle aus der README verwenden. Alle erforderlichen Migrationen anwenden: insbesondere 0009 für Gesamtplätze/Kapazitätsprüfungen und 0010 für die Busfrist **01.11.2026**. Anmeldung, Rollen, Datenhaltung und Mailversand sind noch nicht an die PKC-App angebunden.
+Node >=22.13 und die Befehle aus der README verwenden. Alle erforderlichen Migrationen anwenden: insbesondere 0009 für Gesamtplätze/Kapazitätsprüfungen 0010 für die Busfrist **01.11.2026** und 0011 für genau eine Unterkunft pro Person sowie „Privat organisiert“ mit freiwilliger Ortsangabe. Anmeldung, Rollen, Datenhaltung und Mailversand sind noch nicht an die PKC-App angebunden.
 
 Nach der Integration soll Daniel mit Orga-Rechten Wiki, Neuigkeiten, Angebote, Fristen und Dateien direkt verwalten können. Technische Betreiberrechte dürfen dafür nicht nötig sein. Vor produktiver Übernahme die Abläufe mit echten PKC-Konten testen.

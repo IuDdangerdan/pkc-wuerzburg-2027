@@ -14,7 +14,7 @@ function admin() {
       "Alles im Blick",
       "Geschützte Übersicht. Hier siehst du die vollständigen Rückmeldungen.",
     ) +
-    `<section class="card" style="margin-bottom:22px"><h2>Fragen an die Website-Orga</h2><p class="form-note">Gemeinsamer Posteingang für alle mit Orga-Rolle. Die Absender sehen nur ihre eigenen Fragen.</p>${questionMessages()}</section><div class="card"><h2>${esc(cfg("taskTitle"))}</h2><p>${esc(cfg("taskText"))}</p></div><section class="admin-feedback"><div class="title-row"><h2>Unterkunft</h2><button id="exportLodging">Unterkunft als CSV</button></div>${select("Unterkunft filtern", "lodgingFilter", ["Alle", "Noch offen", "Suche Zimmergemeinschaft", "Gebucht", "Keine Unterkunft nötig"])}<div id="lodgingResults"></div><details class="admin-room-details"><summary>Zimmer bearbeiten & Zimmernummern ergänzen</summary><div class="grid">${state.rooms.map(roomCard).join("") || "<p>Noch keine Zimmer erfasst.</p>"}</div></details></section><section class="admin-feedback"><div class="title-row"><h2>Anreise</h2><button id="exportTravel">Anreise als CSV</button></div>${select("Anreise filtern", "travelFilter", ["Alle", "Reiseart offen", "Businteresse", "Bus", "Bahn", "Auto: selbst fahren", "Auto: mitfahren", "Andere"])}<div id="travelResults"></div></section>${
+    `<section class="card" style="margin-bottom:22px"><h2>Fragen an die Website-Orga</h2><p class="form-note">Gemeinsamer Posteingang für alle mit Orga-Rolle. Die Absender sehen nur ihre eigenen Fragen.</p>${questionMessages()}</section><div class="card"><h2>${esc(cfg("taskTitle"))}</h2><p>${esc(cfg("taskText"))}</p></div><section class="admin-feedback"><div class="title-row"><h2>Unterkunft</h2><button id="exportLodging">Unterkunft als CSV</button></div>${select("Unterkunft filtern", "lodgingFilter", ["Alle", ...lodgingStatuses])}<div id="lodgingResults"></div><details class="admin-room-details"><summary>Zimmer bearbeiten & Zimmernummern ergänzen</summary><div class="grid">${state.rooms.map(roomCard).join("") || "<p>Noch keine Zimmer erfasst.</p>"}</div></details></section><section class="admin-feedback"><div class="title-row"><h2>Anreise</h2><button id="exportTravel">Anreise als CSV</button></div>${select("Anreise filtern", "travelFilter", ["Alle", "Reiseart offen", "Businteresse", "Bus", "Bahn", "Auto: selbst fahren", "Auto: mitfahren", "Andere"])}<div id="travelResults"></div></section>${
       state.me.owner
         ? '<section class="card" style="margin-top:28px"><h2>Konten & Rollen</h2><p class="form-note">Mitglieder melden sich einmal an. Danach kannst du ihr Konto einem Namen zuordnen. Die PKC-App-Anmeldung ist noch nicht angebunden.</p><div id="accounts"></div><h3 style="margin-top:24px">Orga-Berechtigung vergeben</h3><form id="roleForm"><label for="roleMember">Mitglied</label><select id="roleMember">' +
           state.members
@@ -101,7 +101,9 @@ function admin() {
       lodgingRows().map((r) => [
         name(r.id),
         r.plan?.status || "Nicht angegeben",
-        r.rooms.map((x) => x.hotel).join("; ") || "–",
+        r.plan?.status === "Privat organisiert"
+          ? r.plan.private_place || "Ort nicht angegeben"
+          : r.rooms.map((x) => x.hotel).join("; ") || "–",
         r.rooms.map((x) => x.memberIds.map(name).join(", ")).join("; ") || "–",
         r.rooms
           .map((x) => fmt(x.arrival) + " – " + fmt(x.departure))

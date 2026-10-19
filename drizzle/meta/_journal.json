@@ -78,6 +78,13 @@
       "when": 1792395850099,
       "tag": "0010_bus_deadline_20261101",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1792437706644,
+      "tag": "0011_single_accommodation_private",
+      "breakpoints": true
     }
   ]
 }

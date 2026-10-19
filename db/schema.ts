@@ -24,6 +24,7 @@ export const rooms = sqliteTable("rooms", {
 export const plans = sqliteTable("plans", {
   memberId: text("member_id").primaryKey(),
   status: text("status").notNull(),
+  privatePlace: text("private_place").notNull().default(""),
   mode: text("mode").notNull(),
   bus: text("bus").notNull(),
   carRole: text("car_role").notNull().default(""),

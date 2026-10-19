@@ -81,20 +81,20 @@ export default async function Page() {
       </div>
       <div id="toast" role="status" />
       <dialog id="modal" />
-      <script src="/theme.js?v=ride-transfer-1" defer />
-      <script src="/app.js?v=ride-transfer-1" defer />
-      <script src="/wiki.js?v=ride-transfer-1" defer />
-      <script src="/cms.js?v=ride-transfer-1" defer />
-      <script src="/lodging.js?v=ride-transfer-1" defer />
-      <script src="/travel.js?v=ride-transfer-1" defer />
-      <script src="/questions.js?v=ride-transfer-1" defer />
-      <script src="/news.js?v=ride-transfer-1" defer />
-      <script src="/orga.js?v=ride-transfer-1" defer />
-      <script src="/planning.js?v=ride-transfer-1" defer />
-      <script src="/navigation.js?v=ride-transfer-1" defer />
-      <script src="/pages.js?v=ride-transfer-1" defer />
-      <script src="/notifications.js?v=ride-transfer-1" defer />
-      <script src="/bootstrap.js?v=ride-transfer-1" defer />
+      <script src="/theme.js?v=one-accommodation-1" defer />
+      <script src="/app.js?v=one-accommodation-1" defer />
+      <script src="/wiki.js?v=one-accommodation-1" defer />
+      <script src="/cms.js?v=one-accommodation-1" defer />
+      <script src="/lodging.js?v=one-accommodation-1" defer />
+      <script src="/travel.js?v=one-accommodation-1" defer />
+      <script src="/questions.js?v=one-accommodation-1" defer />
+      <script src="/news.js?v=one-accommodation-1" defer />
+      <script src="/orga.js?v=one-accommodation-1" defer />
+      <script src="/planning.js?v=one-accommodation-1" defer />
+      <script src="/navigation.js?v=one-accommodation-1" defer />
+      <script src="/pages.js?v=one-accommodation-1" defer />
+      <script src="/notifications.js?v=one-accommodation-1" defer />
+      <script src="/bootstrap.js?v=one-accommodation-1" defer />
     </>
   );
 }

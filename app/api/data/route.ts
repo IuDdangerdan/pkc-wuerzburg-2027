@@ -469,6 +469,14 @@ export async function GET(request?: Request) {
       updates,
       members,
       rooms,
+      // Nur freiwillig geteilte Ortsangabe; keine fremden Reiseangaben/Budgets.
+      privateStays: (
+        await db
+          .prepare(
+            "SELECT member_id,private_place FROM plans WHERE status='Privat organisiert'",
+          )
+          .all()
+      ).results,
       plans,
       notifications,
       accounts,
@@ -515,33 +523,25 @@ export async function POST(request: Request) {
     if (b.action === "planning") {
       if (!member) return reply({ error: "Mitglied fehlt" }, 403);
       const rooms = b.rooms ?? [];
-      if (!Array.isArray(rooms) || rooms.length > 20)
-        throw Error("Maximal 20 Zimmeränderungen pro Speicherung");
+      if (!Array.isArray(rooms) || rooms.length > 1)
+        throw Error(
+          "Pro Person ist nur eine Unterkunft möglich. Bitte den bestehenden Eintrag bearbeiten.",
+        );
       if (rooms.some((r: any) => !r || typeof r !== "object"))
         throw Error("Ungültige Zimmerangaben");
-      const ids = rooms
-        .filter((r: any) => r.id)
-        .map((r: any) => text(r.id, 100));
-      if (new Set(ids).size !== ids.length)
-        throw Error("Ein Zimmer ist mehrfach enthalten");
-      const statements = await prepareTravelChanges(db, member, b, now);
+      if (rooms.length && b.status !== "Gebucht")
+        throw Error(
+          "Zimmerangaben passen nur zum Status Gebucht. Bitte prüfe deine Unterkunftsauswahl.",
+        );
+      // Zuerst eigene alte Zimmerzuordnung lösen, danach Planung und neue Angaben schreiben.
+      // Der gesamte Batch einschließlich Nachrichten bleibt atomar.
+      const statements = await prepareLodgingDeparture(db, member, b, now);
+      statements.push(...(await prepareTravelChanges(db, member, b, now)));
       for (const room of rooms) {
-        const prepared = await prepareRoom(db, member, orga, room, now, ids);
+        const prepared = await prepareRoom(db, member, orga, room, now);
         if (prepared instanceof Response) return prepared;
         statements.push(...prepared.statements);
       }
-      for (let i = 0; i < rooms.length; i++)
-        for (let j = i + 1; j < rooms.length; j++)
-          if (
-            rooms[i].arrival < rooms[j].departure &&
-            rooms[i].departure > rooms[j].arrival &&
-            rooms[i].memberIds.some((id: string) =>
-              rooms[j].memberIds.includes(id),
-            )
-          )
-            throw Error(
-              "Eine Person ist in zwei überlappenden Zimmern eingetragen",
-            );
       await db.batch(statements);
       return reply({ ok: true });
     }
@@ -556,6 +556,7 @@ export async function POST(request: Request) {
           .first();
         const saved = {
           status: existing?.status || "Noch offen",
+          private_place: existing?.private_place || "",
           mode: existing?.mode || "Noch offen",
           bus: existing?.bus || "Noch offen",
           budget: existing?.budget || "",
@@ -566,7 +567,7 @@ export async function POST(request: Request) {
         };
         const keys =
           b.section === "lodging"
-            ? ["status"]
+            ? ["status", "private_place"]
             : [
                 "mode",
                 "bus",
@@ -581,7 +582,9 @@ export async function POST(request: Request) {
         for (const key of keys)
           if (b[key] === undefined) b[key] = (saved as any)[key];
       }
-      await db.batch(await prepareTravelChanges(db, member, b, now));
+      const statements = await prepareLodgingDeparture(db, member, b, now);
+      statements.push(...(await prepareTravelChanges(db, member, b, now)));
+      await db.batch(statements);
       return reply({ ok: true });
     }
     if (b.action === "room") {
@@ -1494,8 +1497,11 @@ async function preparePlan(db: any, member: any, b: any, now: string) {
     "Noch offen",
     "Suche Zimmergemeinschaft",
     "Gebucht",
+    "Privat organisiert",
     "Keine Unterkunft nötig",
   ]);
+  const privatePlace =
+    status === "Privat organisiert" ? text(b.private_place || "", 200) : "";
   const mode = choice(b.mode, ["Noch offen", "Bus", "Bahn", "Auto", "Andere"]);
   const bus = choice(b.bus, [
     "Noch offen",
@@ -1538,7 +1544,7 @@ async function preparePlan(db: any, member: any, b: any, now: string) {
     throw Error("Bitte ein anderes Chormitglied auswählen");
   return db
     .prepare(
-      "INSERT INTO plans(member_id,status,mode,bus,budget,updated,car_role,car_seats,car_driver,car_capacity) VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(member_id) DO UPDATE SET status=excluded.status,mode=excluded.mode,bus=excluded.bus,budget=excluded.budget,updated=excluded.updated,car_role=excluded.car_role,car_seats=excluded.car_seats,car_driver=excluded.car_driver,car_capacity=excluded.car_capacity",
+      "INSERT INTO plans(member_id,status,mode,bus,budget,updated,car_role,car_seats,car_driver,car_capacity,private_place) VALUES(?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(member_id) DO UPDATE SET private_place=excluded.private_place,status=excluded.status,mode=excluded.mode,bus=excluded.bus,budget=excluded.budget,updated=excluded.updated,car_role=excluded.car_role,car_seats=excluded.car_seats,car_driver=excluded.car_driver,car_capacity=excluded.car_capacity",
     )
     .bind(
       member.id,
@@ -1551,7 +1557,51 @@ async function preparePlan(db: any, member: any, b: any, now: string) {
       carSeats,
       carDriver,
       carCapacity,
+      privatePlace,
     );
+}
+
+/** Bei privater Unterkunft/ohne Übernachtung nur die eigene Zimmerzuordnung lösen.
+ * Andere Bewohner, Buchungsdaten und Zimmernummer bleiben erhalten. Keine stillschweigende
+ * Bereinigung historischer Mehrfacheinträge: nur die ausdrücklich speichernde Person wechselt. */
+async function prepareLodgingDeparture(
+  db: any,
+  member: any,
+  b: any,
+  now: string,
+) {
+  if (!["Privat organisiert", "Keine Unterkunft nötig"].includes(b.status))
+    return [];
+  const assigned = (await db.prepare("SELECT * FROM rooms").all()).results;
+  const statements: any[] = [];
+  for (const room of assigned.filter((r: any) =>
+    JSON.parse(r.member_ids).includes(member.id),
+  )) {
+    const remaining = JSON.parse(room.member_ids).filter(
+      (id: string) => id !== member.id,
+    );
+    statements.push(
+      remaining.length
+        ? db
+            .prepare("UPDATE rooms SET member_ids=?,updated=? WHERE id=?")
+            .bind(JSON.stringify(remaining), now, room.id)
+        : db.prepare("DELETE FROM rooms WHERE id=?").bind(room.id),
+    );
+    for (const id of remaining)
+      statements.push(
+        db
+          .prepare(
+            "INSERT INTO notifications(id,member_id,message,created,seen) VALUES(?,?,?,?,0)",
+          )
+          .bind(
+            crypto.randomUUID(),
+            id,
+            `${member.name} hat eine andere Unterkunftsplanung gespeichert und gehört nicht mehr zu eurer Zimmergemeinschaft in ${room.hotel}.`,
+            now,
+          ),
+      );
+  }
+  return statements;
 }
 
 async function prepareRoom(
@@ -1560,7 +1610,6 @@ async function prepareRoom(
   orga: boolean,
   b: any,
   now: string,
-  skipIds: string[] = [],
 ): Promise<any> {
   const old: any = b.id
     ? await db
@@ -1589,24 +1638,40 @@ async function prepareRoom(
   const arrival = date(b.arrival),
     departure = date(b.departure);
   if (departure <= arrival) throw Error("Abreise muss nach Anreise liegen");
-  const overlaps = (
-    await db
-      .prepare(
-        "SELECT id,member_ids FROM rooms WHERE arrival<? AND departure>?",
-      )
-      .bind(departure, arrival)
-      .all()
-  ).results;
+  // Eine Mitgliedschaft pro Festival, unabhängig von Datumsüberschneidungen.
+  // Auch Zimmerpartner dürfen nicht parallel privat oder in einem anderen Zimmer stehen.
+  const assigned = (await db.prepare("SELECT id,member_ids FROM rooms").all())
+    .results;
   if (
-    overlaps.some(
+    assigned.some(
       (r: any) =>
         r.id !== old?.id &&
-        !skipIds.includes(r.id) &&
-        JSON.parse(r.member_ids).some((x: string) => ids.includes(x)),
+        JSON.parse(r.member_ids).some((id: string) => ids.includes(id)),
     )
   )
     throw Error(
-      "Mindestens eine Person hat in diesem Zeitraum bereits ein Zimmer. Bitte das bestehende Zimmer bearbeiten.",
+      "Mindestens eine Person hat bereits eine Unterkunft. Bitte den bestehenden Eintrag bearbeiten.",
+    );
+  const privateStays = (
+    await db
+      .prepare("SELECT member_id FROM plans WHERE status='Privat organisiert'")
+      .all()
+  ).results;
+  if (
+    privateStays.some(
+      (p: any) => ids.includes(p.member_id) && p.member_id !== member?.id,
+    )
+  )
+    throw Error(
+      "Mindestens eine Person hat ihre Unterkunft privat organisiert. Bitte zuerst deren Planung ändern.",
+    );
+  // Beim eigenen Wechsel von privat zu Hotel schreibt action=planning zuerst den neuen Status.
+  if (
+    privateStays.some((p: any) => ids.includes(p.member_id)) &&
+    b.action === "room"
+  )
+    throw Error(
+      "Bitte zuerst unter Meine Planung von Privat organisiert auf Gebucht wechseln.",
     );
   const id = old?.id || crypto.randomUUID();
   const statements = [

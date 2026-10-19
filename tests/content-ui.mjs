@@ -332,3 +332,39 @@ assert.ok(html.includes("bisherige Fahrer werden benachrichtigt"));
 console.log(
   "PASS: car planning explains total seats, offers passenger selection and discloses updates/notifications.",
 );
+
+// A stored accommodation replaces the add button; private lodging needs no address.
+fixture.rooms = [
+  {
+    id: "one-room",
+    hotel: "Testhotel",
+    arrival: "2027-06-04",
+    departure: "2027-06-06",
+    memberIds: ["pkc-37"],
+    spaces: 0,
+  },
+];
+fixture.plans = [
+  { member_id: "pkc-37", status: "Gebucht", mode: "Bahn", bus: "Nein" },
+];
+context.ui.setState(fixture);
+context.ui.plan();
+assert.equal(node("#addRoom").hidden, true);
+assert.ok(
+  node("#planningRooms").innerHTML.includes('data-plan-room="one-room"'),
+);
+node("#status").value = "Privat organisiert";
+node("#status").onchange();
+assert.equal(node("#privateStay").hidden, false);
+assert.equal(node("#private_place").disabled, false);
+assert.equal(node("#private_place").maxLength, 200);
+assert.ok(!node("#private_place").required);
+assert.equal(node(".plan-rooms").hidden, true);
+assert.equal(node("#leaveRoomNote").hidden, false);
+node("#status").value = "Gebucht";
+node("#status").onchange();
+assert.equal(node("#privateStay").hidden, true);
+assert.equal(node("#private_place").disabled, true);
+console.log(
+  "PASS: one editable accommodation instead of multiple add buttons, optional private location and explicit roommate departure notice.",
+);

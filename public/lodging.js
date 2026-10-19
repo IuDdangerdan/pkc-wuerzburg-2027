@@ -1,4 +1,13 @@
 /* Zimmeranzeige und Zimmereditor. Änderungen innerhalb der Planung bleiben bis zum gemeinsamen Speichern im Entwurf. */
+// Gemeinsame Browser-Statusliste für Planung und Orga-Filter; der Server validiert unabhängig.
+const lodgingStatuses = Object.freeze([
+  "Noch offen",
+  "Suche Zimmergemeinschaft",
+  "Gebucht",
+  "Privat organisiert",
+  "Keine Unterkunft nötig",
+]);
+
 function roomCard(r) {
   return `<div class="card room-card"><span class="tag">${esc(fmt(r.arrival))} – ${esc(fmt(r.departure))}</span><h3 style="margin-top:16px">${esc(r.hotel)}</h3><p>${r.memberIds.map((x) => esc(name(x))).join(", ")}</p>${r.spaces > 0 ? `<span class="tag">${r.spaces} ${r.spaces === 1 ? "Platz" : "Plätze"} frei · Kontakt: ${esc(name(r.memberIds[0]))}</span>` : ""}${r.number !== undefined ? `<p>Zimmernummer: ${esc(r.number || "noch offen")}</p>` : ""}${r.canEdit ? `<div class="actions"><button data-room="${esc(r.id)}">Zimmer bearbeiten</button><button data-number="${esc(r.id)}">Zimmernummer ergänzen</button></div>` : ""}</div>`;
 }
@@ -39,6 +48,8 @@ function bindRooms() {
 
 function roomEditor(r) {
   const staged = !!$("#planningForm");
+  // Alle Einstiegspunkte verwenden den vorhandenen Eintrag derselben Person.
+  if (!r) r = staged ? planningRooms()[0] : mine()[0];
   let ids = new Set(r?.memberIds || [state.me.id]);
   const hotels = state.hotels.filter((h) => !h.archived).map((h) => h.name);
   if (r?.hotel === "IBIS") r = { ...r, hotel: "IBIS Würzburg City" };
@@ -154,6 +165,13 @@ function rooms() {
           .toLowerCase()
           .includes(q),
     );
+    const privateStays = $("#freeOnly").checked
+      ? []
+      : (state.privateStays || []).filter((p) =>
+          ("Privat organisiert " + p.private_place + " " + name(p.member_id))
+            .toLowerCase()
+            .includes(q),
+        );
     const groups = [...new Set(rs.map((r) => r.hotel))];
     $("#roomResults").innerHTML = groups.length
       ? groups
@@ -166,6 +184,17 @@ function rooms() {
           )
           .join("")
       : '<div class="empty">Noch keine passenden Zimmer. Du kannst deine Unterkunft unter „Meine Planung“ eintragen.</div>';
+    if (privateStays.length)
+      $("#roomResults").innerHTML =
+        (groups.length ? $("#roomResults").innerHTML : "") +
+        '<h2 style="margin-top:30px">Privat organisiert</h2><div class="grid">' +
+        privateStays
+          .map(
+            (p) =>
+              `<div class="card room-card"><h3>${esc(name(p.member_id))}</h3><p>${esc(p.private_place || "Ort nicht angegeben")}</p></div>`,
+          )
+          .join("") +
+        "</div>";
     bindRooms();
   };
   show();

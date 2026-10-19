@@ -109,7 +109,7 @@ function renderPlanning() {
   if (!planningDraft) planningDraft = { values: { ...saved }, rooms: [] };
   $("#content").innerHTML =
     title("DEIN WOCHENENDE", "Meine Planung", cfg("planIntro")) +
-    `<form id="planningForm"><section class="card form plan-section" id="planTravel"><h2>Anreise</h2>${select("Wie möchtest du reisen?", "mode", ["Noch offen", "Bus", "Bahn", "Auto", "Andere"], p.mode)}<div id="carOptions">${select("Fährst du selbst oder möchtest du mitfahren?", "car_role", ["Bitte auswählen", "Ich fahre selbst", "Ich möchte mitfahren"], p.car_role)}<div id="carSeatsWrap">${field("Mitfahrerplätze insgesamt (ohne dich)", "car_capacity", p.car_capacity ?? "", "number")}<p class="form-note">Alle Plätze zählen – auch die schon belegten. Beispiel: 4 Plätze insgesamt, davon 2 belegt.</p>${saved.car_role === "Ich fahre selbst" && saved.car_capacity == null ? '<p class="form-note">Bisher wurden freie Plätze abgefragt. Bitte trage die Gesamtzahl neu ein.</p>' : ""}<label for="passengersToggle">Wer fährt schon bei dir mit? (optional)</label><input type="hidden" name="car_passengers_before" value="${esc(JSON.stringify(saved.car_passengers || []))}"><input type="hidden" name="car_passengers" id="car_passengers" value="${esc(typeof p.car_passengers === "string" ? p.car_passengers : JSON.stringify(p.car_passengers || []))}"><button type="button" id="passengersToggle" aria-expanded="false" aria-controls="passengersPicker">Personen auswählen ▾</button><div id="passengersPicker" hidden><input type="search" id="passengersSearch" placeholder="Nach Namen suchen …" aria-label="Mitfahrer suchen"><div id="passengersOptions"></div><button type="button" id="finishPassengers">Fertig</button></div><p id="carOccupancy" class="form-note" role="status"></p><p class="form-note">Beim Speichern wird bei diesen Personen „Auto · Mitfahrt bei dir“ eingetragen. Eine bisherige Zuordnung wird ersetzt. Betroffene Personen und bisherige Fahrer werden benachrichtigt. Bisherige Selbstfahrer werden zu Mitfahrern; ihre bisherigen Mitfahrer bekommen wieder eine offene Fahrerwahl.</p></div><div id="carPassengerWrap"><label for="driverToggle">Bei wem fährst du mit? (optional)</label><input type="hidden" name="car_driver" id="car_driver" value="${esc(p.car_driver || "")}"><button type="button" id="driverToggle" aria-expanded="false" aria-controls="driverPicker">${esc(p.car_driver ? name(p.car_driver) : "Noch offen – Person auswählen")} ▾</button><div id="driverPicker" hidden><input type="search" id="driverSearch" placeholder="Nach Namen suchen …" aria-label="Fahrer suchen"><div id="driverOptions"></div></div></div></div>${busDeadlineNote(false)}${select("Interesse am gemeinsamen Bus? (unverbindlich)", "bus", ["Noch offen", "Ja", "Vielleicht, je nach Preis", "Nein"], p.bus)}<details class="optional-details" ${p.budget ? "open" : ""}><summary>Preisrahmen angeben (optional)</summary>${field("Maximaler Buspreis für Hin- und Rückfahrt (€)", "budget", p.budget, "number")}</details></section><section class="card form plan-section" id="planLodging"><h2>Unterkunft</h2><p class="form-note">Hotels, Preise und Buchungsinfos findest du in unserer Unterkunftsübersicht.</p><a class="button" href="#wiki/unterkunft">Unterkünfte ansehen →</a>${select("Dein Unterkunftsstatus", "status", ["Noch offen", "Suche Zimmergemeinschaft", "Gebucht", "Keine Unterkunft nötig"], p.status)}<div class="plan-rooms"><div id="planningRooms"></div><button type="button" id="addRoom">+ Unterkunft eintragen</button><p class="form-note">Alle buchen selbst. Die Unterkunftsangaben sehen Mitglieder; Zimmernummern nur eure Zimmergemeinschaft und die Orga.</p></div></section><div class="card form planning-finish"><button id="savePlanning" type="submit" class="primary">Planung speichern</button><p id="planningSaveState" class="save-state ${!planningDirty && saved.updated ? "saved" : ""}" role="status" tabindex="-1">${planningDirty ? "Ungespeicherte Änderungen" : saved.updated ? "Deine Planung ist gespeichert." : "Noch keine Planung gespeichert."}</p><p class="form-note">Speichert Anreise, Unterkunftsstatus und übernommene Zimmerangaben zusammen.</p></div></form>`;
+    `<form id="planningForm"><section class="card form plan-section" id="planTravel"><h2>Anreise</h2>${select("Wie möchtest du reisen?", "mode", ["Noch offen", "Bus", "Bahn", "Auto", "Andere"], p.mode)}<div id="carOptions">${select("Fährst du selbst oder möchtest du mitfahren?", "car_role", ["Bitte auswählen", "Ich fahre selbst", "Ich möchte mitfahren"], p.car_role)}<div id="carSeatsWrap">${field("Mitfahrerplätze insgesamt (ohne dich)", "car_capacity", p.car_capacity ?? "", "number")}<p class="form-note">Alle Plätze zählen – auch die schon belegten. Beispiel: 4 Plätze insgesamt, davon 2 belegt.</p>${saved.car_role === "Ich fahre selbst" && saved.car_capacity == null ? '<p class="form-note">Bisher wurden freie Plätze abgefragt. Bitte trage die Gesamtzahl neu ein.</p>' : ""}<label for="passengersToggle">Wer fährt schon bei dir mit? (optional)</label><input type="hidden" name="car_passengers_before" value="${esc(JSON.stringify(saved.car_passengers || []))}"><input type="hidden" name="car_passengers" id="car_passengers" value="${esc(typeof p.car_passengers === "string" ? p.car_passengers : JSON.stringify(p.car_passengers || []))}"><button type="button" id="passengersToggle" aria-expanded="false" aria-controls="passengersPicker">Personen auswählen ▾</button><div id="passengersPicker" hidden><input type="search" id="passengersSearch" placeholder="Nach Namen suchen …" aria-label="Mitfahrer suchen"><div id="passengersOptions"></div><button type="button" id="finishPassengers">Fertig</button></div><p id="carOccupancy" class="form-note" role="status"></p><p class="form-note">Beim Speichern wird bei diesen Personen „Auto · Mitfahrt bei dir“ eingetragen. Eine bisherige Zuordnung wird ersetzt. Betroffene Personen und bisherige Fahrer werden benachrichtigt. Bisherige Selbstfahrer werden zu Mitfahrern; ihre bisherigen Mitfahrer bekommen wieder eine offene Fahrerwahl.</p></div><div id="carPassengerWrap"><label for="driverToggle">Bei wem fährst du mit? (optional)</label><input type="hidden" name="car_driver" id="car_driver" value="${esc(p.car_driver || "")}"><button type="button" id="driverToggle" aria-expanded="false" aria-controls="driverPicker">${esc(p.car_driver ? name(p.car_driver) : "Noch offen – Person auswählen")} ▾</button><div id="driverPicker" hidden><input type="search" id="driverSearch" placeholder="Nach Namen suchen …" aria-label="Fahrer suchen"><div id="driverOptions"></div></div></div></div>${busDeadlineNote(false)}${select("Interesse am gemeinsamen Bus? (unverbindlich)", "bus", ["Noch offen", "Ja", "Vielleicht, je nach Preis", "Nein"], p.bus)}<details class="optional-details" ${p.budget ? "open" : ""}><summary>Preisrahmen angeben (optional)</summary>${field("Maximaler Buspreis für Hin- und Rückfahrt (€)", "budget", p.budget, "number")}</details></section><section class="card form plan-section" id="planLodging"><h2>Unterkunft</h2><p class="form-note">Hotels, Preise und Buchungsinfos findest du in unserer Unterkunftsübersicht.</p><a class="button" href="#wiki/unterkunft">Unterkünfte ansehen →</a>${select("Dein Unterkunftsstatus", "status", lodgingStatuses, p.status)}<div id="privateStay">${field("Wo übernachtest du? (optional)", "private_place", p.private_place)}<p class="form-note">Privat organisiert reicht als Angabe. Wenn du einen Ort einträgst, sehen ihn die Chormitglieder unter „Wer wohnt wo?“.</p></div><p id="leaveRoomNote" class="form-note" hidden>Beim Speichern verlässt du deine bisherige Zimmergemeinschaft. Die anderen Bewohner bleiben eingetragen und werden benachrichtigt.</p><div class="plan-rooms"><div id="planningRooms"></div><button type="button" id="addRoom">+ Unterkunft eintragen</button><p class="form-note">Alle buchen selbst. Die Unterkunftsangaben sehen Mitglieder; Zimmernummern nur eure Zimmergemeinschaft und die Orga.</p></div></section><div class="card form planning-finish"><button id="savePlanning" type="submit" class="primary">Planung speichern</button><p id="planningSaveState" class="save-state ${!planningDirty && saved.updated ? "saved" : ""}" role="status" tabindex="-1">${planningDirty ? "Ungespeicherte Änderungen" : saved.updated ? "Deine Planung ist gespeichert." : "Noch keine Planung gespeichert."}</p><p class="form-note">Speichert Anreise, Unterkunftsstatus und übernommene Zimmerangaben zusammen.</p></div></form>`;
   const carToggle = () => {
     const car = $("#mode").value === "Auto",
       driver = car && $("#car_role").value === "Ich fahre selbst",
@@ -135,8 +135,14 @@ function renderPlanning() {
   bindDriverPicker();
   bindPassengerPicker();
   const lodgingToggle = () => {
-    $(".plan-rooms").hidden =
-      $("#status").value !== "Gebucht" && !planningRooms().length;
+    const status = $("#status").value;
+    $(".plan-rooms").hidden = status !== "Gebucht";
+    $("#privateStay").hidden = status !== "Privat organisiert";
+    $("#private_place").disabled = status !== "Privat organisiert";
+    $("#private_place").maxLength = 200;
+    $("#leaveRoomNote").hidden =
+      !mine().length ||
+      !["Privat organisiert", "Keine Unterkunft nötig"].includes(status);
   };
   $("#status").onchange = lodgingToggle;
   lodgingToggle();
@@ -149,12 +155,14 @@ function renderPlanning() {
   $("#planningForm").onsubmit = savePlanning;
   $("#addRoom").onclick = () => {
     rememberPlanning();
-    roomEditor();
+    roomEditor(planningRooms()[0]);
   };
   renderPlanningRooms();
 }
 
 function renderPlanningRooms() {
+  // Kein zweiter Eintrag: vorhandene Unterkunft bearbeiten statt weitere hinzufügen.
+  $("#addRoom").hidden = planningRooms().length > 0;
   $("#planningRooms").innerHTML = planningRooms()
     .map(
       (r) =>
@@ -187,17 +195,28 @@ async function savePlanning(e) {
     await post({
       action: "planning",
       ...planningDraft.values,
-      rooms: planningDraft.rooms.map(
-        ({ id, hotel, arrival, departure, number, spaces, memberIds }) => ({
-          id,
-          hotel,
-          arrival,
-          departure,
-          number,
-          spaces,
-          memberIds,
-        }),
-      ),
+      rooms:
+        planningDraft.values.status === "Gebucht"
+          ? planningDraft.rooms.map(
+              ({
+                id,
+                hotel,
+                arrival,
+                departure,
+                number,
+                spaces,
+                memberIds,
+              }) => ({
+                id,
+                hotel,
+                arrival,
+                departure,
+                number,
+                spaces,
+                memberIds,
+              }),
+            )
+          : [],
     });
     planningDirty = false;
     planningDraft = null;

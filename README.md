@@ -57,6 +57,16 @@ Die feste Reihenfolge ist `style.css` → `usability.css` → `festival.css`:
 
 Responsive und gestalterische Überschreibungen sind teilweise absichtlich vorhanden. Nicht blind nach identischen Selektoren zusammenfassen: Spezifität und Media Queries beeinflussen das Ergebnis. Die zusätzliche `hidden`-/`display`-Absicherung des mobilen Menüs verhindert bekannte Sichtbarkeitsprobleme. Nach Asset-Änderungen die Versionsparameter in `page.tsx` bzw. `layout.tsx` anpassen.
 
+## Eine Unterkunft pro Person
+
+Eine Person kann für dieses Festival höchstens einer Zimmergemeinschaft zugeordnet sein – unabhängig vom Reisezeitraum. Die Oberfläche bietet bei vorhandenem Eintrag nur Bearbeitung an; API und Datenbank prüfen dieselbe Regel auch für ausgewählte Zimmerpartner. Die frühere Mehrzimmer- und Überschneidungslogik ist entfernt.
+
+Alternativ wählt man „Privat organisiert“. `plans.private_place` speichert auf Wunsch einen Ort (max. 200 Zeichen); ein Ort ist keine Pflicht. Es entsteht dafür kein zusätzlicher Zimmerdatensatz. `GET.privateStays` gibt ausschließlich Mitglieds-ID und freiwillige Ortsangabe an zugeordnete Mitglieder aus. „Wer wohnt wo?“ und der Orga-Export zeigen diese Angaben; fremde vollständige Planungen bleiben geschützt.
+
+Beim Speichern von „Privat organisiert“ oder „Keine Unterkunft nötig“ löst `prepareLodgingDeparture()` nur die eigene Zimmerzuordnung. Andere Bewohner und Zimmerangaben bleiben erhalten, verbleibende Bewohner erhalten eine In-App-Nachricht. Ein leer gewordenes Zimmer wird entfernt. Änderungen und Nachrichten werden mit Reiseplanung/Status in einem Batch gespeichert; ein Fehler rollt alles zurück. Die Oberfläche weist vor dem Speichern auf den Austritt hin.
+
+Migration `0011_single_accommodation_private.sql` ergänzt das Ortsfeld und Transaktions-Trigger für die Ein-Zimmer-Regel sowie den Ausschluss privater Unterkunft und Zimmerzuordnung. Bestehende Einträge werden nicht automatisch gelöscht oder zusammengeführt. Historische Mehrfacheinträge vor einer Datenübernahme prüfen; die private Live-App hatte am 19.10.2026 keine Zimmer. Die eingefrorene öffentliche Testversion und deren Daten bleiben unverändert. Neue Prüfungen: `tests/access.mjs` und `tests/content-ui.mjs`.
+
 ## Entwicklung und Prüfungen
 
 Node >=22.13 verwenden. Für eine neue lokale Arbeitskopie `npm ci`, danach `npm run dev`. `npm run db:generate` erzeugt Migrationen nur bei Schemaänderungen. Vorhandene SQL-Migrationen gemäß Sites-Vinext-Workflow auf die jeweilige Datenbank anwenden.
@@ -89,7 +99,7 @@ Dieser Vergleich prüft Dateien, nicht die Live-Datenbank: gespeicherte Planunge
 Die private Site nutzt die Sites-ChatGPT-Anmeldung. Die Chorliste ist eine vorbereitete Kopie ohne laufende Synchronisation. Neue Konten benötigen die serverseitige Zuordnung zu einem Mitglied. Der Betreiber ist vorläufig über seine E-Mail im Servercode festgelegt; er kann Rollen zuweisen. Die spätere PKC-Integration ersetzt diesen Adapter durch die übergeordnete App.
 
 - Eigene vollständige Planung: Mitglied selbst und Orga.
-- Unterkunft, Bewohner, Zeitraum und freie Plätze: zugeordnete Mitglieder.
+- Unterkunft, Bewohner, Zeitraum, freie Plätze sowie freiwilliger Ort privater Unterkunft: zugeordnete Mitglieder.
 - Zimmernummer: Zimmerbewohner und Orga.
 - Fragen: Absender und Orga; kein öffentliches FAQ.
 - Mitglieder-Vorschau: reduzierte Serverantwort und gesperrte Änderungen, keine Rollenänderung.

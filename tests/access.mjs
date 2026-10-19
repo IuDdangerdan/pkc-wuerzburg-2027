@@ -1006,6 +1006,7 @@ const combined = {
   budget: "90",
   rooms: [
     {
+      id: roomId,
       hotel: "Gemeinsamer Test",
       arrival: "2028-06-04",
       departure: "2028-06-06",
@@ -1541,4 +1542,227 @@ assert.equal(
 ); // no confirmed driver plan
 console.log(
   "PASS: selecting a passenger or an unconfirmed driver is rejected, preserving actual car capacity checks.",
+);
+
+// One festival accommodation per member, including private arrangements.
+user = {
+  userId: "owner-test",
+  email: "daniel95schaefer@gmail.com",
+  displayName: "Daniel",
+};
+sql.exec("DELETE FROM rooms; DELETE FROM plans; DELETE FROM notifications;");
+const lodgingPlan = {
+  action: "planning",
+  status: "Privat organisiert",
+  private_place: "",
+  mode: "Bahn",
+  bus: "Nein",
+  budget: "",
+  rooms: [],
+};
+assert.equal((await post(lodgingPlan)).status, 200);
+let lodgingData = (await get()).data;
+assert.equal(
+  lodgingData.plans.find((p) => p.member_id === "pkc-37").private_place,
+  "",
+);
+assert.deepEqual(lodgingData.privateStays, [
+  { member_id: "pkc-37", private_place: "" },
+]);
+assert.equal(
+  (await post({ ...lodgingPlan, private_place: "Bei Freunden" })).status,
+  200,
+);
+assert.equal(
+  (await post({ ...lodgingPlan, private_place: "x".repeat(201) })).status,
+  400,
+);
+assert.equal((await get()).data.privateStays[0].private_place, "Bei Freunden");
+const lodgingRoom = {
+  hotel: "Einziges Hotel",
+  arrival: "2027-06-04",
+  departure: "2027-06-06",
+  memberIds: ["pkc-37", "pkc-6"],
+  number: "15",
+  spaces: 1,
+};
+assert.equal((await post({ action: "room", ...lodgingRoom })).status, 400);
+// Explicitly switching from private to a hotel clears the private location and creates just one room.
+assert.equal(
+  (await post({ ...lodgingPlan, status: "Gebucht", rooms: [lodgingRoom] }))
+    .status,
+  200,
+);
+lodgingData = (await get()).data;
+const singleRoomId = lodgingData.rooms[0].id;
+assert.equal(lodgingData.privateStays.length, 0);
+assert.equal(
+  lodgingData.plans.find((p) => p.member_id === "pkc-37").private_place,
+  "",
+);
+// Different dates do not permit a second accommodation; neither does a different room owner.
+assert.equal(
+  (
+    await post({
+      action: "room",
+      ...lodgingRoom,
+      arrival: "2030-01-01",
+      departure: "2030-01-02",
+    })
+  ).status,
+  400,
+);
+assert.equal(
+  (
+    await post({
+      action: "room",
+      ...lodgingRoom,
+      memberIds: ["pkc-6", "pkc-7"],
+    })
+  ).status,
+  400,
+);
+assert.equal(
+  (
+    await post({
+      ...lodgingPlan,
+      status: "Gebucht",
+      rooms: [
+        lodgingRoom,
+        { ...lodgingRoom, arrival: "2030-01-01", departure: "2030-01-02" },
+      ],
+    })
+  ).status,
+  400,
+);
+assert.equal(
+  (
+    await post({
+      action: "room",
+      ...lodgingRoom,
+      id: singleRoomId,
+      hotel: "Geändertes Hotel",
+    })
+  ).status,
+  200,
+);
+assert.equal((await get()).data.rooms.length, 1);
+// A failed private switch must not remove room membership or send notifications.
+const roomBeforePrivate = JSON.stringify(
+  sql.prepare("SELECT * FROM rooms").all(),
+);
+const notesBeforePrivate = sql
+  .prepare("SELECT COUNT(*) AS n FROM notifications")
+  .get().n;
+assert.equal((await post({ ...lodgingPlan, mode: "Unbekannt" })).status, 400);
+assert.equal(
+  JSON.stringify(sql.prepare("SELECT * FROM rooms").all()),
+  roomBeforePrivate,
+);
+assert.equal(
+  sql.prepare("SELECT COUNT(*) AS n FROM notifications").get().n,
+  notesBeforePrivate,
+);
+assert.equal(
+  (await post({ ...lodgingPlan, private_place: "Privat bei Freunden" })).status,
+  200,
+);
+lodgingData = (await get()).data;
+assert.deepEqual(lodgingData.rooms[0].memberIds, ["pkc-6"]);
+assert.equal(lodgingData.rooms[0].number, "15");
+assert.equal(lodgingData.rooms[0].hotel, "Geändertes Hotel");
+assert.equal(
+  sql.prepare("SELECT COUNT(*) AS n FROM notifications").get().n,
+  notesBeforePrivate + 1,
+);
+assert.match(
+  sql
+    .prepare("SELECT message FROM notifications ORDER BY rowid DESC LIMIT 1")
+    .get().message,
+  /gehört nicht mehr/,
+);
+// Legacy travel-only saves preserve the private stay; other linked members see only its public fields.
+assert.equal(
+  (
+    await post({
+      action: "plan",
+      section: "travel",
+      mode: "Bus",
+      bus: "Ja",
+      budget: "22",
+    })
+  ).status,
+  200,
+);
+assert.equal(
+  (await get()).data.privateStays[0].private_place,
+  "Privat bei Freunden",
+);
+user = rideSecond;
+lodgingData = (await get()).data;
+assert.deepEqual(lodgingData.privateStays, [
+  { member_id: "pkc-37", private_place: "Privat bei Freunden" },
+]);
+assert.ok(!lodgingData.plans.some((p) => p.member_id === "pkc-37"));
+assert.equal(
+  (
+    await post({
+      action: "room",
+      ...lodgingRoom,
+      memberIds: ["pkc-7", "pkc-37"],
+    })
+  ).status,
+  400,
+);
+user = {
+  userId: "unlinked-stay",
+  email: "unlinked@test.invalid",
+  displayName: "Unlinked",
+};
+assert.equal((await get()).data.privateStays, undefined);
+// Database-level guards cover racing requests and alternate writers as well.
+assert.throws(
+  () =>
+    sql
+      .prepare(
+        "INSERT INTO rooms(id,owner,hotel,arrival,departure,member_ids,updated) VALUES('duplicate','x','x','2030-01-01','2030-01-02','[\"pkc-6\"]','now')",
+      )
+      .run(),
+  /nur eine Unterkunft/,
+);
+assert.throws(
+  () =>
+    sql
+      .prepare(
+        "INSERT INTO rooms(id,owner,hotel,arrival,departure,member_ids,updated) VALUES('private-conflict','x','x','2030-01-01','2030-01-02','[\"pkc-37\"]','now')",
+      )
+      .run(),
+  /schließen sich aus/,
+);
+assert.throws(
+  () =>
+    sql
+      .prepare(
+        "INSERT INTO plans(member_id,status,mode,bus,updated) VALUES('pkc-6','Privat organisiert','Bahn','Nein','now')",
+      )
+      .run(),
+  /schließen sich aus/,
+);
+user = {
+  userId: "owner-test",
+  email: "daniel95schaefer@gmail.com",
+  displayName: "Daniel",
+};
+assert.equal(
+  (await post({ ...lodgingPlan, status: "Keine Unterkunft nötig" })).status,
+  200,
+);
+assert.equal((await get()).data.privateStays.length, 0);
+assert.equal(
+  sql.prepare("SELECT private_place FROM plans WHERE member_id='pkc-37'").get()
+    .private_place,
+  "",
+);
+console.log(
+  "PASS: one accommodation across all dates, optional private location, private/hotel switches, roommate preservation, scoped visibility, legacy saves, notifications, atomic rollback and database race guards.",
 );
