@@ -68,3 +68,7 @@ next-env.d.ts
 .dev.vars.*
 .vscode/
 .handover-check/
+
+# GitHub Pages build dependencies and output
+/scripts/pages/node_modules/
+/pages-dist/

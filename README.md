@@ -1,5 +1,7 @@
 # PKC · Würzburg 2027
 
+**Öffentliche Pages-Vorschau:** [Website öffnen](https://IuDdangerdan.github.io/pkc-wuerzburg-2027/) · [Orga-Simulation](https://IuDdangerdan.github.io/pkc-wuerzburg-2027/?ansicht=orga#admin). Nur Beispieldaten, kein Speichern oder Versand. Build, Reverse-Proxy-Vorschlag und konkrete PKC-Anbindung: [GITHUB_PAGES_UND_PKC.md](GITHUB_PAGES_UND_PKC.md).
+
 **GitHub-Übergabekopie:** Bitte zuerst [UEBERGABE.md](UEBERGABE.md) lesen. Diese Kopie ist nicht mit dem bestehenden Sites-Repository oder dessen Veröffentlichung verbunden.
 
 Eigenständiges Festival-Wiki mit Planung, Zimmergemeinschaften und Orga-Verwaltung. Daten liegen zentral in D1, hochgeladene Dateien in R2. Die bestehende PKC-App wird nicht verändert.

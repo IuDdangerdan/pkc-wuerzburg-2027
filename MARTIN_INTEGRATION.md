@@ -1,6 +1,6 @@
 # Für Martin: Stand und offene PKC-Integration
 
-Stand: 19. Oktober 2026
+Stand der Fachlogik: 19. Oktober 2026. Ergänzung vom 21.10.2026: [GitHub Pages, eigenständiges Hosting und PKC-Anbindung](GITHUB_PAGES_UND_PKC.md). Diese neue Anleitung beschreibt den getrennten Frontend-Betrieb; die nachfolgenden Fachregeln bleiben maßgeblich.
 
 ## Gestaltung
 
@@ -236,9 +236,9 @@ Von Martin zu klären bzw. umzusetzen:
 - FAQ enthält ein Fragenformular an die Website-Orga: Speicherung in `questions`, sichtbar für Absender und alle mit Orga-Rolle. Alle Orga-Mitglieder erhalten eine Benachrichtigung. Gemeinsamer Posteingang in der Orga-Übersicht und unter Fragen & Antworten. Normale Mitglieder sehen nur eigene Fragen. Keine automatische Veröffentlichung als FAQ.
 - Bei PKC-Integration Absender aus angemeldetem Mitglied ableiten und Empfänger anhand der Website-Orga-Rolle ermitteln; bestehenden Maildienst auch für eingehende Fragen an die Orga verwenden. Aktuell wird keine E-Mail verschickt.
 - WhatsApp-Direktlink ist hinterlegt. Nicht ungefragt in die öffentliche Demo übernehmen.
-- Auto-Anreise verlangt `car_role` (selbst fahren / mitfahren); Fahrer müssen `car_seats` (freie Plätze ohne Fahrer, auch 0) angeben. Nur eigene Planung und Orga sehen diese Angaben, inklusive CSV. Beim Wechsel der Reiseart werden alte Autoangaben gelöscht.
+- Auto-Anreise verlangt `car_role` (selbst fahren / mitfahren). Maßgeblich ist `car_capacity`: alle Mitfahrerplätze ohne Fahrer, auch bereits belegte. `car_seats` sind daraus berechnete Restplätze. Siehe den aktuellen Abschnitt „Fahrgemeinschaften: Gesamtplätze und Mitfahrer“. Beim Wechsel der Reiseart werden alte Autoangaben gelöscht.
 
-- Mitfahrer können optional unter `car_driver` die Mitglieds-ID ihres bereits abgesprochenen Fahrers angeben (durchsuchbare Einzelauswahl; eigene Person ausgeschlossen). Keine automatische Platzreservierung oder Bestätigung. Angabe ist in Orga-Übersicht und CSV enthalten; beim Wechsel auf andere Reiseart oder Selbstfahren wird sie gelöscht. Für PKC das Mitgliederverzeichnis anbinden.
+- Mitfahrer können unter `car_driver` die Mitglieds-ID ihres abgesprochenen Fahrers wählen (durchsuchbar; eigene Person ausgeschlossen). Beim gültigen Speichern werden Zuordnung, Platzbelegung und Benachrichtigungen gemeinsam aktualisiert; keine zusätzliche Bestätigung erforderlich. Die früher nur informelle Fahrerangabe wurde durch die oben dokumentierte Fahrgemeinschaftslogik ersetzt. Für PKC das Mitgliederverzeichnis anbinden.
 
 - Rückmeldefrist für das unverbindliche Businteresse: **01.11.2026**. Die Inhaltsmigration `0010_bus_deadline_20261101.sql` ändert den bisherigen CMS-Wert und aktuelle Bus-Neuigkeiten auf die neue Frist, ohne Benachrichtigungen auszulösen. Andere Einstellungen bleiben erhalten. Sichtbar im Planungsformular, unter Gemeinsam anreisen sowie Anreise & Bus und Kosten & Fristen. Die Frist ist ein Rückmeldehinweis; spätere Eingaben werden nicht automatisch gesperrt.
 

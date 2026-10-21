@@ -1,0 +1,10 @@
+{
+  "name": "pkc-festival-pages-build",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "typescript": "5.9.3",
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
+  }
+}
