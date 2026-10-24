@@ -46,9 +46,23 @@ let user = {
   email: "daniel95schaefer@gmail.com",
   displayName: "Daniel",
 };
-let source = fs
-  .readFileSync("app/api/data/route.ts", "utf8")
-  .replace(/\bimport[\s\S]*?;\s*/g, "")
+let source = fs.readFileSync("app/api/data/route.ts", "utf8");
+// Remove actual import declarations only; comments and strings may also contain "import".
+const routeSource = ts.createSourceFile(
+  "route.ts",
+  source,
+  ts.ScriptTarget.Latest,
+  true,
+  ts.ScriptKind.TS,
+);
+for (const declaration of routeSource.statements
+  .filter(ts.isImportDeclaration)
+  .reverse()) {
+  source =
+    source.slice(0, declaration.getStart(routeSource)) +
+    source.slice(declaration.end);
+}
+source = source
   .replaceAll("export const dynamic", "const dynamic")
   .replaceAll("export async function", "async function");
 source =
