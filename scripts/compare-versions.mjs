@@ -1,7 +1,7 @@
-/** Vergleicht zwei lokale Arbeitskopien, ohne Netzwerkzugriff oder Änderungen.
- * Anwendung, Tests, Migrationen und Assets müssen bytegleich sein.
- * Nur ausdrücklich dokumentierte Hosting-/Übergabeunterschiede sind erlaubt.
- * Aufruf: node scripts/compare-versions.mjs <private-Kopie> <GitHub-Kopie>
+/** Compare two local working copies without network access or modifications.
+ * Application code, tests, migrations, and assets must be byte-identical.
+ * Only explicitly documented hosting and handover differences are allowed.
+ * Usage: node scripts/compare-versions.mjs <private-copy> <github-copy>
  */
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
@@ -66,7 +66,7 @@ for (const file of new Set([...privateFiles, ...githubFiles])) {
       delete privateConfig.project_id;
       assert.deepEqual(privateConfig, githubConfig);
     } else if (file === "README.md") {
-      // Nur die bekannten GitHub-spezifischen Einleitungs-/Feedbackabschnitte ausnehmen.
+      // Exclude only the known GitHub-specific introduction and feedback sections.
       const common = b
         .toString()
         .replace(/^\*\*GitHub-Übergabekopie:\*\*[^\n]*\n\n/m, "")

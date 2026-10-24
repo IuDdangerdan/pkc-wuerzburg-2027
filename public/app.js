@@ -1,5 +1,5 @@
-/* Gemeinsamer Zustand, DOM-Helfer, API-Aufrufe und Seitenverteilung.
- * Klassische defer-Skripte teilen bewusst diesen Namensraum; Start erst in bootstrap.js. */
+/* Shared state, DOM helpers, API calls, and page routing.
+ * Classic defer scripts deliberately share this namespace; initialization starts in bootstrap.js. */
 let memberPreview = sessionStorage.getItem("pkc-member-preview") === "1";
 
 const $ = (s) => document.querySelector(s);

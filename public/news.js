@@ -1,4 +1,4 @@
-/* Neuigkeiten und Link-Buttons. Speichern und Benachrichtigen sind getrennte, bewusste Orga-Aktionen. */
+/* News and link buttons. Saving and notifying are separate, explicit organizer actions. */
 let newsExpanded = false;
 
 function newsHeading(u) {

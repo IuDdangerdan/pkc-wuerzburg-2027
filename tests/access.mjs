@@ -273,7 +273,7 @@ console.log(
   "PASS: private question inbox and notifications; conditional car requirements, seat validation and stale-field clearing.",
 );
 
-// Mitfahrten benötigen eine bestätigte Fahrerplanung mit Gesamtplätzen.
+// Passenger assignments require a saved driver plan with total passenger capacity.
 await post({
   ...plan,
   car_role: "Ich fahre selbst",
@@ -1162,7 +1162,7 @@ console.log(
   "PASS: read receipts affect only supplied own notifications; other/new notifications stay unread; invalid batches rejected.",
 );
 
-// Fahrgemeinschaften: getrennte Kapazität, synchronisierte Mitfahrende und atomare Nachrichten.
+// Carpools: explicit capacity, synchronized passenger assignments, and transactional notifications.
 sql.exec("DELETE FROM plans; DELETE FROM notifications;");
 sql
   .prepare("UPDATE members SET user_id='ride-passenger' WHERE id='pkc-6'")
@@ -1366,7 +1366,7 @@ console.log(
   "PASS: total car capacity, selected passengers, private synchronized plans, notifications, removal/leave, full cars, conflicts, stale lists and atomic rollback.",
 );
 
-// Korrekturen dürfen von Mitfahrenden und Fahrern erfolgen: letzte gültige Speicherung gilt.
+// Passengers and drivers can correct assignments: the last valid save takes effect.
 sql.exec("DELETE FROM plans; DELETE FROM notifications;");
 user = rideOwner;
 assert.equal(
@@ -1467,7 +1467,7 @@ assert.equal(
   sql.prepare("SELECT COUNT(*) AS n FROM notifications").get().n,
   noticesBefore,
 );
-// Auch ein bisheriger Fahrer kann übernommen werden; seine Mitfahrer werden freigegeben.
+// An existing driver can become a passenger; their passengers are released from the old carpool.
 assert.equal(
   (await post({ ...ridePlan, car_capacity: 2, car_passengers: ["pkc-37"] }))
     .status,

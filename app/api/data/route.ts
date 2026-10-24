@@ -3,7 +3,7 @@ import { getChatGPTUser } from "../../chatgpt-auth";
 import seed from "../../seed.json";
 import cmsDefaults from "../../cms-defaults.json";
 export const dynamic = "force-dynamic";
-// Vorläufiger Sites-Adapter: bei PKC-Integration Identität, Mitglieder und Rollen aus der App beziehen.
+// Temporary Sites adapter: use the app's identity, members, and roles when integrating with PKC.
 const OWNER_EMAIL = "daniel95schaefer@gmail.com";
 const roster = [
   "Andra",
@@ -100,8 +100,8 @@ function date(v: any) {
     throw Error("Ungültiges Datum");
   return v;
 }
-// Historische, wiederholbar ausführbare Inhaltsübernahmen bewusst erhalten.
-// Ihre Marker verhindern, dass bereits bearbeitete Inhalte bei jedem Start zurückgesetzt werden.
+// Deliberately retain historical content imports that are safe to run repeatedly.
+// Their markers prevent edited content from being reset on every startup.
 async function init(db: any) {
   await db.batch(
     roster.map((name, i) =>
@@ -251,8 +251,8 @@ async function splitFestivalNews(db: any) {
   ]);
 }
 
-// Liefert vorbereitete Statements: Aufrufer speichert Nachricht und Beitrag gemeinsam per db.batch.
-// Keine E-Mail hier; der PKC-Maildienst muss später an die ausdrückliche Freigabe gekoppelt werden.
+// Return prepared statements: the caller saves the notification and post together via db.batch.
+// No email is sent here; the PKC mail service must later be tied to explicit notification approval.
 async function newsNotifications(
   db: any,
   id: string,
@@ -279,7 +279,7 @@ async function newsNotifications(
   ];
 }
 
-// Zentrale serverseitige Identitäts- und Rollenprüfung für GET und POST.
+// Central server-side identity and role checks for GET and POST.
 async function context() {
   const user = await getChatGPTUser();
   if (!user) return { error: reply({ error: "Bitte anmelden" }, 401) };
@@ -316,7 +316,7 @@ export async function GET(request?: Request) {
       canPreview &&
       request !== undefined &&
       new URL(request.url).searchParams.get("preview") === "member";
-    // Vorschau reduziert schon die gelieferten Daten, nicht nur die sichtbaren Buttons.
+    // Preview mode restricts returned data, not just visible buttons.
     const orga = canPreview && !preview;
     if (!db || !user) return reply({ error: "Nicht verfügbar" }, 503);
     if (request && new URL(request.url).searchParams.has("file")) {
@@ -402,8 +402,8 @@ export async function GET(request?: Request) {
               .all()
           ).results
         : [];
-    // Nur eigene bzw. für Orga freigegebene Planungen um deren Mitfahrer ergänzen.
-    // Fremde Busbudgets und Unterkunftsstatus bleiben für Mitglieder weiterhin privat.
+    // Add passengers only to the member's own plans or plans accessible to organizers.
+    // Other members' bus budgets and accommodation status remain private.
     for (const plan of plans) {
       plan.car_passengers = (
         await db
@@ -469,7 +469,7 @@ export async function GET(request?: Request) {
       updates,
       members,
       rooms,
-      // Nur freiwillig geteilte Ortsangabe; keine fremden Reiseangaben/Budgets.
+      // Only voluntarily shared locations; no other members' travel details or budgets.
       privateStays: (
         await db
           .prepare(
@@ -519,7 +519,7 @@ export async function POST(request: Request) {
         },
         403,
       );
-    // Erst alle Planungs-/Zimmerangaben prüfen; erst danach atomar schreiben und Partner benachrichtigen.
+    // Validate all planning and room details before saving and notifying roommates in one transaction.
     if (b.action === "planning") {
       if (!member) return reply({ error: "Mitglied fehlt" }, 403);
       const rooms = b.rooms ?? [];
@@ -533,8 +533,8 @@ export async function POST(request: Request) {
         throw Error(
           "Zimmerangaben passen nur zum Status Gebucht. Bitte prüfe deine Unterkunftsauswahl.",
         );
-      // Zuerst eigene alte Zimmerzuordnung lösen, danach Planung und neue Angaben schreiben.
-      // Der gesamte Batch einschließlich Nachrichten bleibt atomar.
+      // Remove the member's previous room assignment before saving the plan and new details.
+      // The entire batch, including notifications, runs in one transaction.
       const statements = await prepareLodgingDeparture(db, member, b, now);
       statements.push(...(await prepareTravelChanges(db, member, b, now)));
       for (const room of rooms) {
@@ -545,8 +545,8 @@ export async function POST(request: Request) {
       await db.batch(statements);
       return reply({ ok: true });
     }
-    // Kompatibilität für ältere getrennte Anreise-/Unterkunftsformulare.
-    // Die aktuelle Oberfläche verwendet action=planning und denselben Validator preparePlan.
+    // Compatibility with older, separate travel and accommodation forms.
+    // The current UI uses action=planning and the same preparePlan validator.
     if (b.action === "plan") {
       if (!member) return reply({ error: "Mitglied fehlt" }, 403);
       if (b.section === "lodging" || b.section === "travel") {
@@ -859,7 +859,7 @@ export async function POST(request: Request) {
   }
 }
 
-// Startwerte nur einmal übernehmen; spätere Orga-Änderungen bleiben in D1 maßgeblich.
+// Import defaults only once; subsequent organizer changes in D1 remain authoritative.
 async function cmsInit(db: any) {
   if (
     await db.prepare("SELECT id FROM content_settings WHERE id='main'").first()
@@ -1282,15 +1282,15 @@ async function cmsFile(
   return reply({ error: "Datei nicht verfügbar" }, 404);
 }
 
-// car_driver ist die einzige gespeicherte Mitgliedschaft einer Fahrgemeinschaft.
-// Änderungen und Nachrichten werden mit der eigenen Planung gemeinsam in db.batch geschrieben.
+// car_driver is the sole stored record of carpool membership.
+// Changes and notifications are written together with the member's plan via db.batch.
 async function prepareTravelChanges(
   db: any,
   member: any,
   input: any,
   now: string,
 ) {
-  // 1. Gespeicherten Stand lesen und sämtliche Eingaben prüfen; hier wird noch nichts geschrieben.
+  // 1. Read saved state and validate all inputs; do not write anything yet.
   const all: any[] = (await db.prepare("SELECT * FROM plans").all()).results;
   const old = all.find((p) => p.member_id === member.id);
   const driver = input.mode === "Auto" && input.car_role === "Ich fahre selbst";
@@ -1304,7 +1304,7 @@ async function prepareTravelChanges(
       p.mode === "Auto" &&
       p.car_role === "Ich möchte mitfahren",
   );
-  // Ganze Mitfahrerlisten aus einem veralteten Formular nicht still über neuere Änderungen schreiben.
+  // Do not silently overwrite newer changes with passenger lists from a stale form.
   if (b.car_passengers_before !== undefined) {
     let before;
     try {
@@ -1374,14 +1374,14 @@ async function prepareTravelChanges(
       throw Error(
         "Die Gesamtzahl der Mitfahrerplätze ist bei dieser Person noch nicht bestätigt. Bitte zuerst ergänzen lassen.",
       );
-    // Nach den obigen Prüfungen sind Fahrperson und Gesamtplatzzahl bestätigt.
+    // The checks above have validated the driver and total passenger capacity.
     const occupied = all.filter(
       (p) => p.car_driver === newDriver && p.member_id !== member.id,
     ).length;
     if (occupied >= target.car_capacity)
       throw Error("Bei dieser Person ist kein Mitfahrerplatz mehr frei");
   }
-  // 2. Ausschließlich Statements sammeln; der Aufrufer führt den vollständigen Batch atomar aus.
+  // 2. Collect statements only; the caller executes the full batch in one transaction.
   const statements: any[] = [];
   const notify = (id: string, message: string) =>
     statements.push(
@@ -1391,7 +1391,7 @@ async function prepareTravelChanges(
         )
         .bind(crypto.randomUUID(), id, message, now),
     );
-  // Beide Freigabewege verwenden dieselbe Änderung samt Nachricht.
+  // Both ways of releasing an assignment use the same update and notification.
   const releasePassenger = (
     passengerId: string,
     driverId: string,
@@ -1409,8 +1409,8 @@ async function prepareTravelChanges(
   const affectedDrivers = new Set<string>(
     [member.id, old?.car_driver].filter(Boolean),
   );
-  // Eine neue ausdrückliche Zuordnung ersetzt die alte. Ausgewählte bisherige Fahrer
-  // geben ihre eigene Fahrgemeinschaft auf; nicht mit übernommene Mitfahrer werden informiert.
+  // An explicit new assignment replaces the old one. Selected members who were drivers
+  // leave their own carpools; passengers not transferred with them are notified.
   for (const id of ids) {
     const previous = all.find((p) => p.member_id === id);
     if (previous?.car_driver && previous.car_driver !== member.id) {
@@ -1440,7 +1440,7 @@ async function prepareTravelChanges(
       }
     }
   }
-  // Entfernte Zuordnungen zuerst lösen, damit eine kleinere Gesamtzahl nicht kurzzeitig überbelegt ist.
+  // Remove old assignments first so a reduced capacity is never temporarily exceeded.
   for (const p of current.filter((p) => !ids.includes(p.member_id))) {
     releasePassenger(
       p.member_id,
@@ -1448,7 +1448,7 @@ async function prepareTravelChanges(
       `${member.name} hat deine Mitfahrt aufgehoben. In deiner Planung ist die Fahrerwahl wieder offen.`,
     );
   }
-  // 3. Eigene Planung und neue Mitfahrer speichern; fremde Unterkunft/Budgets bleiben erhalten.
+  // 3. Save the member's plan and new passengers; preserve other members' accommodation and budgets.
   statements.push(self);
   for (const id of ids.filter(
     (id) => !current.some((p) => p.member_id === id),
@@ -1477,7 +1477,7 @@ async function prepareTravelChanges(
         `${member.name} hat eine Mitfahrt bei dir eingetragen. Deine Mitfahrerliste und freien Plätze wurden aktualisiert.`,
       );
   }
-  // 4. Restplätze aus den endgültigen Zuordnungen berechnen, nicht schrittweise hoch-/herunterzählen.
+  // 4. Calculate remaining seats from final assignments instead of incrementing or decrementing counters.
   if (newDriver) affectedDrivers.add(newDriver);
   for (const id of affectedDrivers) {
     statements.push(
@@ -1491,7 +1491,7 @@ async function prepareTravelChanges(
   return statements;
 }
 
-// Validatoren bereiten Statements vor und schreiben nicht selbst. So bleiben Mehrfachänderungen atomar.
+// Validators prepare statements without writing data, keeping multi-record changes transactional.
 async function preparePlan(db: any, member: any, b: any, now: string) {
   const status = choice(b.status, [
     "Noch offen",
@@ -1522,7 +1522,7 @@ async function preparePlan(db: any, member: any, b: any, now: string) {
     String(hasCapacity ? b.car_capacity : (b.car_seats ?? "")).trim() === ""
   )
     throw Error("Bitte die gesamte Zahl der Mitfahrerplätze ohne dich angeben");
-  // Alte car_seats-Werte waren freie Plätze. Nicht als Gesamtzahl umdeuten.
+  // Legacy car_seats values represent available seats. Do not reinterpret them as total capacity.
   const carCapacity =
     carRole === "Ich fahre selbst" && hasCapacity
       ? number(b.car_capacity)
@@ -1561,9 +1561,9 @@ async function preparePlan(db: any, member: any, b: any, now: string) {
     );
 }
 
-/** Bei privater Unterkunft/ohne Übernachtung nur die eigene Zimmerzuordnung lösen.
- * Andere Bewohner, Buchungsdaten und Zimmernummer bleiben erhalten. Keine stillschweigende
- * Bereinigung historischer Mehrfacheinträge: nur die ausdrücklich speichernde Person wechselt. */
+/** For private accommodation or no overnight stay, remove only the member's own room assignment.
+ * Preserve other occupants, booking details, and room numbers. Do not silently
+ * clean up historical duplicates: only the member explicitly saving changes moves. */
 async function prepareLodgingDeparture(
   db: any,
   member: any,
@@ -1638,8 +1638,8 @@ async function prepareRoom(
   const arrival = date(b.arrival),
     departure = date(b.departure);
   if (departure <= arrival) throw Error("Abreise muss nach Anreise liegen");
-  // Eine Mitgliedschaft pro Festival, unabhängig von Datumsüberschneidungen.
-  // Auch Zimmerpartner dürfen nicht parallel privat oder in einem anderen Zimmer stehen.
+  // One room assignment per festival, regardless of overlapping dates.
+  // Roommates also cannot simultaneously have private accommodation or another room assignment.
   const assigned = (await db.prepare("SELECT id,member_ids FROM rooms").all())
     .results;
   if (
@@ -1665,7 +1665,7 @@ async function prepareRoom(
     throw Error(
       "Mindestens eine Person hat ihre Unterkunft privat organisiert. Bitte zuerst deren Planung ändern.",
     );
-  // Beim eigenen Wechsel von privat zu Hotel schreibt action=planning zuerst den neuen Status.
+  // When switching from private accommodation to a hotel, action=planning writes the new status first.
   if (
     privateStays.some((p: any) => ids.includes(p.member_id)) &&
     b.action === "room"

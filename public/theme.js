@@ -1,4 +1,4 @@
-/* Bleibt auch dann bedienbar, wenn React den Seitenkopf neu aufbaut. */
+/* Remain usable when React rebuilds the page header. */
 let festivalDarkMode = false;
 try {
   festivalDarkMode = localStorage.getItem("pkc-theme") === "dark";

@@ -1,4 +1,4 @@
-/* Gemeinsame Anreise, Fahrerauswahl und Busfrist. */
+/* Shared travel plans, driver selection, and bus deadline. */
 function travel() {
   $("#content").innerHTML =
     '<div class="page-back-row"><a class="button" href="#together">← Zurück zu Gemeinsam unterwegs</a></div>' +
@@ -66,7 +66,7 @@ function busDeadlineNote(withLink) {
     : "";
 }
 
-// Mehrfachauswahl bleibt im gemeinsamen Entwurf; erst Speichern verändert andere Planungen.
+// Multiple selections stay in the shared draft; only saving updates other members' plans.
 function bindPassengerPicker() {
   const selected = new Set(JSON.parse($("#car_passengers").value || "[]"));
   const button = $("#passengersToggle");

@@ -1,4 +1,4 @@
-/* Geschützte Rückmeldungen, CSV-Export sowie vorläufige Konto- und Rollenzuordnung. */
+/* Restricted responses, CSV export, and temporary account and role mapping. */
 function admin() {
   if (!state.me.orga) {
     $("#content").innerHTML = title(

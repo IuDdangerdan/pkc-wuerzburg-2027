@@ -1,5 +1,5 @@
-/* Einziger Einstieg: Alle Skripte in app/page.tsx müssen vorher geladen sein.
- * Tests laden nur Definitionen und starten weder Netzwerk noch Seiteninitialisierung. */
+/* Single entry point: all scripts in app/page.tsx must load first.
+ * Tests load definitions only, without network requests or page initialization. */
 window.addEventListener("hashchange", handleRouteChange);
 
 load().catch((e) => {

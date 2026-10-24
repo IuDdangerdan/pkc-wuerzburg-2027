@@ -1,5 +1,5 @@
-/* Zimmeranzeige und Zimmereditor. Änderungen innerhalb der Planung bleiben bis zum gemeinsamen Speichern im Entwurf. */
-// Gemeinsame Browser-Statusliste für Planung und Orga-Filter; der Server validiert unabhängig.
+/* Room display and editor. Planning changes stay in the draft until the full plan is saved. */
+// Shared browser status list for planning and organizer filters; the server validates independently.
 const lodgingStatuses = Object.freeze([
   "Noch offen",
   "Suche Zimmergemeinschaft",
@@ -48,7 +48,7 @@ function bindRooms() {
 
 function roomEditor(r) {
   const staged = !!$("#planningForm");
-  // Alle Einstiegspunkte verwenden den vorhandenen Eintrag derselben Person.
+  // All entry points reuse the person's existing entry.
   if (!r) r = staged ? planningRooms()[0] : mine()[0];
   let ids = new Set(r?.memberIds || [state.me.id]);
   const hotels = state.hotels.filter((h) => !h.archived).map((h) => h.name);

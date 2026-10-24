@@ -1,6 +1,6 @@
 ALTER TABLE `plans` ADD `private_place` text DEFAULT '' NOT NULL;
 --> statement-breakpoint
--- Eine Zimmerzuordnung pro Person, auch bei unterschiedlichen Reisedaten.
+-- One room assignment per person, even with different travel dates.
 CREATE TRIGGER rooms_single_insert BEFORE INSERT ON rooms BEGIN
   SELECT RAISE(ABORT, 'Pro Person ist nur eine Unterkunft möglich')
   WHERE EXISTS (SELECT 1 FROM rooms other, json_each(other.member_ids) occupant, json_each(NEW.member_ids) chosen
@@ -10,7 +10,7 @@ CREATE TRIGGER rooms_single_insert BEFORE INSERT ON rooms BEGIN
     WHERE p.member_id=chosen.value AND p.status='Privat organisiert');
 END;
 --> statement-breakpoint
--- Eine Zimmerzuordnung pro Person, auch bei unterschiedlichen Reisedaten.
+-- One room assignment per person, even with different travel dates.
 CREATE TRIGGER rooms_single_update BEFORE UPDATE ON rooms BEGIN
   SELECT RAISE(ABORT, 'Pro Person ist nur eine Unterkunft möglich')
   WHERE EXISTS (SELECT 1 FROM rooms other, json_each(other.member_ids) occupant, json_each(NEW.member_ids) chosen

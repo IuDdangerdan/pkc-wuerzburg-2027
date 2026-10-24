@@ -1,4 +1,4 @@
-/* Lesestatus nach bestätigter Speicherung aktualisieren, nur für konkrete Einträge. */
+/* Update read status for specific entries only after the save is confirmed. */
 let notificationObserver = null;
 const notificationReadTimers = new Map(),
   pendingNotificationReads = new Set();

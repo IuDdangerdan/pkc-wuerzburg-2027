@@ -1,5 +1,5 @@
-/* Gemeinsamer Entwurf für Anreise und Unterkunft. Session-Speicherung ist pro Mitglied und Vorschau getrennt.
- * Erst action=planning speichert beide Bereiche und Zimmer atomar auf dem Server. */
+/* Shared draft for travel and accommodation. Session storage is separate for each member and preview mode.
+ * Only action=planning saves both sections and room assignments in one server transaction. */
 let planningDraft = null,
   planningDirty = false,
   activeHash = location.hash || "#wiki/start";
@@ -19,7 +19,7 @@ function rememberPlanning() {
     try {
       sessionStorage.setItem(planningKey(), JSON.stringify(planningDraft));
     } catch {
-      // Gesperrter Browser-Speicher darf das Bearbeiten im aktuellen Tab nicht verhindern.
+      // Blocked browser storage must not prevent editing in the current tab.
     }
 }
 
@@ -35,7 +35,7 @@ function markPlanningDirty() {
 
 function readPlanningDraft() {
   if (planningDraft && planningDirty) return planningDraft;
-  // Ein unveränderter Formular-Snapshot darf frisch geladene Zuordnungen nicht verdecken.
+  // An unchanged form snapshot must not hide freshly loaded assignments.
   planningDraft = null;
   try {
     const saved = JSON.parse(sessionStorage.getItem(planningKey()) || "null");
@@ -44,7 +44,7 @@ function readPlanningDraft() {
       return (planningDraft = saved);
     }
   } catch {
-    // Defekte oder alte Entwürfe ignorieren; gespeicherte Serverdaten bleiben die Grundlage.
+    // Ignore invalid or outdated drafts; saved server data remains the source of truth.
   }
   return null;
 }
@@ -72,8 +72,8 @@ function handleRouteChange() {
   const changed = nextHash !== activeHash;
   activeHash = nextHash;
   render();
-  // Beim erneuten Aufrufen auch Änderungen durch andere Mitglieder holen.
-  // Echte ungespeicherte Entwürfe bleiben dabei unangetastet.
+  // Fetch changes made by other members when reopening the page.
+  // Preserve drafts that contain unsaved changes.
   if (
     changed &&
     nextHash === "#plan" &&
@@ -105,7 +105,7 @@ window.addEventListener("beforeunload", (e) => {
 function renderPlanning() {
   const saved = state.plans.find((p) => p.member_id === state.me.id) || {},
     draft = readPlanningDraft();
-  // Eine von Zimmerpartnern gespeicherte Zuordnung muss auch ohne eigene Statusmeldung sichtbar sein.
+  // Show assignments saved by roommates even when the member has not set their own status.
   const p = draft?.values || {
     ...saved,
     status: mine().length ? "Gebucht" : saved.status,
@@ -165,7 +165,7 @@ function renderPlanning() {
 }
 
 function renderPlanningRooms() {
-  // Kein zweiter Eintrag: vorhandene Unterkunft bearbeiten statt weitere hinzufügen.
+  // Edit the existing accommodation instead of adding a second entry.
   $("#addRoom").hidden = planningRooms().length > 0;
   $("#planningRooms").innerHTML = planningRooms()
     .map(

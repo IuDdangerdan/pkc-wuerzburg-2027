@@ -1,5 +1,5 @@
-/* Redaktionelle Inhalte und strukturierte Angebote; Daten kommen aus state, nicht aus dem HTML. */
-/* Redaktionelle Verwaltung, ausschließlich mit Website-Orga-Rolle. */
+/* Editorial content and structured offers; data comes from state, not HTML. */
+/* Editorial management, restricted to the website organizer role. */
 const SETTINGS_GROUPS = [
   [
     "Festival & Kontakt",

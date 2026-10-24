@@ -1,4 +1,4 @@
-/** Isolierte Anwendungsprüfungen. Kein Zugriff auf Live-Daten oder Deployment. */
+/** Isolated application checks. No access to live data or deployment. */
 import { readdirSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 function run(args) {

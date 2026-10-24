@@ -86,7 +86,7 @@ assert.equal(
   nodes.get("#planningSaveState").textContent,
   "Ungespeicherte Änderungen",
 );
-// Anreise stays in the same draft when the lodging field changes.
+// Travel details stay in the same draft when the lodging field changes.
 form.fields.status = "Suche Zimmergemeinschaft";
 c.test.markPlanningDirty();
 assert.equal(c.test.draft().values.mode, "Bahn");
@@ -128,7 +128,7 @@ console.log(
   "PASS: new routes start at top, cancelled/same-page renders retain scroll, and obsolete animation callbacks cannot move a later route.",
 );
 
-// Ein sauberer Formular-Snapshot wird nicht als ungespeicherter Entwurf wiederverwendet.
+// Do not reuse an unchanged form snapshot as an unsaved draft.
 c.test.clear();
 storage.clear();
 vm.runInContext(

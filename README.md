@@ -14,6 +14,8 @@ Eigenständiges Festival-Wiki mit Planung, Zimmergemeinschaften und Orga-Verwalt
 
 ## Orientierung im Code
 
+Code-Kommentare schreiben wir einheitlich auf Englisch. Sie erklären fachliche Regeln und die Gründe hinter Entscheidungen in einfacher Sprache. Oberflächentexte und Übergabedokumentation bleiben auf Deutsch.
+
 | Datei | Zuständigkeit |
 | --- | --- |
 | `app/page.tsx`, `app/layout.tsx` | Authentifiziertes Grundgerüst und Ladefolge der Skripte/Styles |

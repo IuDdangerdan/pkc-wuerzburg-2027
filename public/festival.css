@@ -1,5 +1,5 @@
-/* PKC Festival: Apricot, Papier und Rot. Referenz: potsdamerkneipenchor.de/festival.
-   Bebas Neue für Plakattitel; klare SVG-Symbole, ruhige Flächen und feste Menükanten. */
+/* PKC Festival: apricot, paper, and red. Reference: potsdamerkneipenchor.de/festival.
+   Bebas Neue for poster headings; clear SVG icons, calm surfaces, and aligned menu edges. */
 @font-face {
   font-family: "Bebas Neue";
   src: url("/fonts/bebas-neue.ttf") format("truetype");
@@ -160,7 +160,7 @@ aside {
 .aside-bottom {
   font-size: 11px;
 }
-/* Alle Ebenen teilen dieselben Spalten, Abstände und Schriftgrößen. */
+/* All levels share the same columns, spacing, and font sizes. */
 #nav .main-navigation,
 #nav .utility-navigation {
   display: grid;
@@ -228,7 +228,7 @@ body.dark #nav a.active {
 #nav a.active .unread-dot {
   background: #fff;
 }
-/* Sichtbarkeit bleibt auch bei geerbten Nav-Styles eindeutig. */
+/* Keep visibility explicit even with inherited navigation styles. */
 #nav[hidden] {
   display: none !important;
 }
@@ -423,7 +423,7 @@ body.dark .primary,
 #updates .update .button {
   font-size: 12px;
 }
-/* Einheitliche Infokarten: Icon, Titel, ein klarer Pfeil. Keine wechselnden Farben. */
+/* Consistent information cards: icon, title, and a clear arrow. Use a single color scheme. */
 #pages .card-link,
 .cms-area-card {
   background: var(--panel);
@@ -597,7 +597,7 @@ body.dark a.primary {
 body.dark .festival strong span {
   color: #f3a5b5;
 }
-/* Safari: keine zu flachen nativen Selects. */
+/* Safari: keep native select controls tall enough to use. */
 select {
   appearance: none;
   -webkit-appearance: none;
@@ -756,7 +756,7 @@ select {
   }
 }
 
-/* Unterkunft: allgemeine Hinweise und vollständige Angebote einzeln aufklappen. */
+/* Accommodation: expand general guidance and full offers individually. */
 .booking-information {
   background: var(--panel);
   border: 1px solid var(--line);
@@ -919,7 +919,7 @@ select {
   line-height: 1.4;
 }
 
-/* Neu und gelesen sind durch Text UND Gestaltung unterscheidbar. */
+/* Distinguish new and read entries through both text and styling. */
 .notification-toolbar,
 .notification-heading,
 .notification-actions {

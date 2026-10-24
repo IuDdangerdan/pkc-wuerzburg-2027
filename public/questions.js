@@ -1,4 +1,4 @@
-/* Kontaktformular und Fragenpostfach. Sichtbarkeit wird zusätzlich auf dem Server geprüft. */
+/* Contact form and question inbox. The server also enforces visibility rules. */
 function questionMessages() {
   return (
     (state.questions || [])

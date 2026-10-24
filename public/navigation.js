@@ -1,4 +1,4 @@
-/* Navigationssymbole und responsives Menü. hidden und display sichern die Sichtbarkeit auch gegen geerbte CSS-Regeln. */
+/* Navigation icons and responsive menu. hidden and display enforce visibility even with inherited CSS rules. */
 function navIcon(name) {
   const shapes = {
     home: '<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/><path d="M9 21v-8h6v8"/>',

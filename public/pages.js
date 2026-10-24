@@ -1,4 +1,4 @@
-/* Einstiegsseiten: Übersicht, Festivalinfos und Gemeinsam unterwegs. */
+/* Landing pages: overview, festival information, and shared travel. */
 function pageSummary(page) {
   return page.summary || "Infos zu " + page.title + ".";
 }

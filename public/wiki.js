@@ -1,4 +1,4 @@
-/* Wiki-Darstellung, eingeschränktes Markdown und redaktioneller Versionsverlauf. */
+/* Wiki rendering, restricted Markdown, and editorial version history. */
 function inline(s) {
   return esc(s).replace(
     /\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+|tel:[^\s)]+|\/api\/data\?file=[a-zA-Z0-9_-]+|\/documents\/[a-zA-Z0-9_.-]+|#(?:plan|rooms|travel|wiki\/[a-zA-Z0-9_-]+))\)/g,

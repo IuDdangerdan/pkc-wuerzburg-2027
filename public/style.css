@@ -1256,7 +1256,7 @@ body.dark nav a.active {
   }
 }
 
-/* Ursprüngliche Neuigkeitenliste, jetzt unter dem Begrüßungsbereich. */
+/* Original news list, now below the welcome section. */
 .news-section.card {
   margin: 22px 0;
   padding: 24px;
@@ -1474,7 +1474,7 @@ body.dark nav a.active {
   }
 }
 
-/* Klare Planungsbereiche und nutzbare schmale Orga-Ansichten. */
+/* Clear planning sections and usable organizer views on narrow screens. */
 .plan-section {
   margin: 0 0 24px;
   scroll-margin-top: 18px;
